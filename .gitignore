@@ -1,0 +1,14 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Local-only HTML draft we don't want to publish
+legacy.html
+
+# Local environment
+.env
+*.log
