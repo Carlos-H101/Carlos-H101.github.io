@@ -2563,6 +2563,22 @@
             }
         }
 
+        /* ───── §10.5 · Touch device tweaks ────────────────────────────────
+           Phones / tablets get the cursor canvases hidden and tilt frozen so
+           the page feels calm and fast under a finger. */
+        html.touch #traceCanvas,
+        html.touch #sparkCanvas { display: none }
+        html.touch .tilt { transform: none !important }
+
+        /* Buttery scrolling + smoother focus transitions across the page */
+        @media (prefers-reduced-motion: no-preference) {
+            html { scroll-behavior: smooth }
+        }
+        body { -webkit-tap-highlight-color: transparent }
+        img, video {
+            content-visibility: auto;
+        }
+
         /* ───── §11 · Reveal-on-scroll utility — applied to .rv elements via JS */
         .rv {
             opacity: 0;
@@ -3536,7 +3552,7 @@
                     <div class="pins-v pins-r" id="pr"></div>
                     <div class="chip-body">
                         <div class="chip-dot"></div><img
-                            src="./Worthy%20Images/the-sense-cube.webp"
+                            src="./Worthy%20Images/carlos-portrait.webp"
                             alt="Carlos Gael Hernandez Castro" loading="lazy">
                     </div>
                     <div class="chip-lbl">
@@ -4098,10 +4114,17 @@
          ╚══════════════════════════════════════════════════════════════════════╝ -->
     <script>
         // ─── §1 · Mouse + scroll state ────────────────────────────────────────
+        // Touch-only devices (phones, tablets) shouldn't get the cursor trail —
+        // it follows the user's finger and feels noisy. Detect once at boot.
+        var IS_TOUCH = window.matchMedia &&
+                       window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        if (IS_TOUCH) document.documentElement.classList.add('touch');
+
         var M = { x: 0, y: 0, nx: 0.5, ny: 0.5, vx: 0, vy: 0, px: 0, py: 0 };
         var scrollProg = 0;
-        var mouseInside = true;
+        var mouseInside = !IS_TOUCH;   // never "in" on touch — keeps trail off
         document.addEventListener("mousemove", function (e) {
+            if (IS_TOUCH) return;       // ignore synthesized mousemoves on touch
             mouseInside = true;
             M.px = M.x; M.py = M.y; M.x = e.clientX; M.y = e.clientY;
             M.nx = M.x / window.innerWidth; M.ny = M.y / window.innerHeight;
@@ -4142,7 +4165,7 @@
         function dT() { tx.clearRect(0, 0, TW, TH); var mxS = M.x; var myS = M.y; var scrollI = 0.06 + scrollProg * 0.12; var i, n, e, a, b, dd, pr, al, px, py, t2, cpx, cpy; for (i = 0; i < edges.length; i++) { e = edges[i]; a = nodes[e.a]; b = nodes[e.b]; var cx = (a.x + b.x) / 2; var cy = (a.y + b.y) / 2; dd = Math.sqrt((mxS - cx) * (mxS - cx) + (myS - cy) * (myS - cy)); pr = Math.max(0, 1 - dd / 350); al = scrollI + pr * 0.12; tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = e.w + pr * 1.5; tx.beginPath(); tx.moveTo(a.x, a.y); tx.lineTo(e.mx, e.my); tx.lineTo(b.x, b.y); tx.stroke(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); pr = Math.max(0, 1 - dd / 250); if (n.pad) { tx.fillStyle = "rgba(0,212,255," + (0.08 + scrollProg * 0.06 + pr * 0.2) + ")"; tx.fillRect(n.x - 5, n.y - 5, 10, 10); if (pr > 0.3) { tx.shadowColor = "rgba(0,212,255,0.4)"; tx.shadowBlur = 8 + pr * 12; tx.fillRect(n.x - 5, n.y - 5, 10, 10); tx.shadowBlur = 0; } } else if (n.via) { tx.beginPath(); tx.arc(n.x, n.y, 3 + pr * 2, 0, Math.PI * 2); tx.strokeStyle = "rgba(0,212,255," + (0.12 + scrollProg * 0.08 + pr * 0.3) + ")"; tx.lineWidth = 1.5; tx.stroke(); if (pr > 0.2) { tx.beginPath(); tx.arc(n.x, n.y, 1.5, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.3 + pr * 0.4) + ")"; tx.fill(); } } else { tx.beginPath(); tx.arc(n.x, n.y, n.r + pr * 2, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.05 + scrollProg * 0.04 + pr * 0.15) + ")"; tx.fill(); } } for (i = pulses.length - 1; i >= 0; i--) { var p = pulses[i]; p.t += p.sp; if (p.t > 1) { pulses.splice(i, 1); continue; } a = nodes[p.e.a]; b = nodes[p.e.b]; if (p.t < 0.5) { t2 = p.t * 2; px = a.x + (p.e.mx - a.x) * t2; py = a.y + (p.e.my - a.y) * t2; } else { t2 = (p.t - 0.5) * 2; px = p.e.mx + (b.x - p.e.mx) * t2; py = p.e.my + (b.y - p.e.my) * t2; } al = 1 - p.t * 0.7; tx.beginPath(); tx.arc(px, py, p.sz, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.7) + ")"; tx.fill(); tx.beginPath(); tx.arc(px, py, p.sz * 3, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.1) + ")"; tx.fill(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); if (dd < 180 && dd > 20) { al = Math.max(0, (1 - dd / 180) * 0.3); tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = 0.7; tx.beginPath(); tx.moveTo(mxS, myS); cpx = mxS + (n.x - mxS) * 0.5 + (Math.random() - 0.5) * 25; cpy = myS + (n.y - myS) * 0.5 + (Math.random() - 0.5) * 25; tx.quadraticCurveTo(cpx, cpy, n.x, n.y); tx.stroke(); } } var spawnRate = 0.91 - scrollProg * 0.15; if (Math.random() > spawnRate) sP(); }
         var SC = document.getElementById("sparkCanvas"); var sx = SC.getContext("2d"); var SW, SH, sparks = [];
         function rSC() { SW = window.innerWidth; SH = window.innerHeight; SC.width = SW; SC.height = SH; }
-        function eS() { var sp = Math.sqrt(M.vx * M.vx + M.vy * M.vy); if (sp > 2) { var c = Math.min(Math.floor(sp / 4), 4); for (var i = 0; i < c; i++) { sparks.push({ x: M.x + (Math.random() - 0.5) * 6, y: M.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 2 + M.vx * 0.1, vy: (Math.random() - 0.5) * 2 + M.vy * 0.1, life: 1, dec: 0.015 + Math.random() * 0.025, sz: 1 + Math.random() * 2 }); } } }
+        function eS() { if (IS_TOUCH) return; var sp = Math.sqrt(M.vx * M.vx + M.vy * M.vy); if (sp > 2) { var c = Math.min(Math.floor(sp / 4), 4); for (var i = 0; i < c; i++) { sparks.push({ x: M.x + (Math.random() - 0.5) * 6, y: M.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 2 + M.vx * 0.1, vy: (Math.random() - 0.5) * 2 + M.vy * 0.1, life: 1, dec: 0.015 + Math.random() * 0.025, sz: 1 + Math.random() * 2 }); } } }
         function dS() { sx.clearRect(0, 0, SW, SH); for (var i = sparks.length - 1; i >= 0; i--) { var s = sparks[i]; s.x += s.vx; s.y += s.vy; s.vy += 0.05; s.life -= s.dec; if (s.life <= 0) { sparks.splice(i, 1); continue; } sx.beginPath(); sx.arc(s.x, s.y, s.sz * s.life, 0, Math.PI * 2); sx.fillStyle = "rgba(0,212,255," + (s.life * 0.7) + ")"; sx.fill(); sx.beginPath(); sx.arc(s.x, s.y, s.sz * s.life * 3, 0, Math.PI * 2); sx.fillStyle = "rgba(0,212,255," + (s.life * 0.08) + ")"; sx.fill(); } }
 
         // ─── §3 · Tilt + parallax accents (uT, uP) ──────────────────────────
@@ -4338,7 +4361,7 @@
             }
         }
         document.addEventListener("keydown", function (e) { if (e.key === "Escape") { cLB(); cG(); } });
-        document.addEventListener("click", function (e) { for (var i = 0; i < 8; i++) { var ang = Math.random() * Math.PI * 2; var spd = 2 + Math.random() * 4; sparks.push({ x: e.clientX, y: e.clientY, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, life: 1, dec: 0.02 + Math.random() * 0.02, sz: 1.5 + Math.random() * 2.5 }); } });
+        document.addEventListener("click", function (e) { if (IS_TOUCH) return; for (var i = 0; i < 8; i++) { var ang = Math.random() * Math.PI * 2; var spd = 2 + Math.random() * 4; sparks.push({ x: e.clientX, y: e.clientY, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, life: 1, dec: 0.02 + Math.random() * 0.02, sz: 1.5 + Math.random() * 2.5 }); } });
 
         // ─── §8 · Sense Cube auto-slider (legacy) + lightbox helpers ────────
         var scCur = 0;
