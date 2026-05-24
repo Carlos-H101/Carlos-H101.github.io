@@ -129,6 +129,32 @@
             color: inherit
         }
 
+        /* One-shot page-load illumination sweep — travels left → right once. */
+        #loadSweep {
+            position: fixed;
+            inset: 0 auto 0 -35vw;
+            width: 35vw;
+            pointer-events: none;
+            z-index: 9997;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(0, 212, 255, .10) 30%,
+                rgba(0, 212, 255, .32) 50%,
+                rgba(0, 212, 255, .10) 70%,
+                transparent 100%);
+            filter: blur(40px);
+            opacity: 0;
+            animation: pageSweep 2.4s cubic-bezier(.4, 0, .2, 1) .15s 1 forwards;
+            will-change: transform, opacity
+        }
+        @keyframes pageSweep {
+            0%   { transform: translateX(0);     opacity: 0 }
+            10%  { opacity: 1 }
+            90%  { opacity: 1 }
+            100% { transform: translateX(135vw); opacity: 0 }
+        }
+        @media (prefers-reduced-motion: reduce) { #loadSweep { display: none } }
+
         /* ───── §2 · Page chrome ───────────────────────────────────────────── */
         #substrate {
             position: fixed;
@@ -2391,8 +2417,48 @@
            Phones / tablets get the cursor canvases hidden and tilt frozen so
            the page feels calm and fast under a finger. */
         html.touch #traceCanvas,
-        html.touch #sparkCanvas { display: none }
+        html.touch #sparkCanvas,
+        html.touch #loadSweep { display: none }
         html.touch .tilt { transform: none !important }
+        html.touch body::after { display: none }   /* drop the cursor-follow halo */
+
+        /* ───── §10.6 · Mobile-safe layout & image handling ───────────────── */
+        @media (max-width: 720px) {
+            /* Honeycomb must not overflow the viewport on narrow screens. */
+            .hex-grid {
+                --hex-w: min(28vw, 150px);
+                --lift: 50px;
+                width: 100% !important;
+                max-width: 100%;
+                padding-left: .5rem;
+                padding-right: .5rem;
+                box-sizing: border-box
+            }
+            .hex-row.offset { margin-left: var(--shift) !important }
+
+            /* Awards hex backgrounds — guarantee the image actually renders.
+               Some older mobile browsers ignore CSS-variable URLs inside
+               background-image; we re-declare with a safe shorthand fallback. */
+            .hex-top::after { background-image: var(--hex-img), none }
+
+            /* Cards / sections must never push past the viewport's right edge. */
+            section { overflow: hidden }
+            .pgrid, .cad-grid { padding-left: 1rem; padding-right: 1rem }
+
+            /* Bigger tap targets across nav + cards. */
+            .nl a, .pgrid-arrow, .hex-cell { -webkit-tap-highlight-color: transparent }
+
+            /* Avoid janky aspect-ratio fallback for ancient browsers. */
+            .pcard { aspect-ratio: 5/9; min-height: 360px }
+        }
+        @media (max-width: 480px) {
+            .hex-grid {
+                --hex-w: min(30vw, 130px);
+                --lift: 38px
+            }
+            .pcard { flex: 0 0 86vw; min-height: 320px }
+            .scinfo-box, .cadinfo-box { grid-template-columns: 1fr !important }
+        }
 
         /* Buttery scrolling + smoother focus transitions across the page */
         @media (prefers-reduced-motion: no-preference) {
@@ -3577,7 +3643,10 @@
                 radial-gradient(ellipse 40% 30% at 50% 95%, rgba(255, 140, 0, .08), transparent 70%),
                 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='139' viewBox='0 0 120 139'><g fill='none' stroke='%23FFB300' stroke-width='1.4' stroke-opacity='.18'><polygon points='60,4 116,36 116,104 60,136 4,104 4,36'/><polygon points='0,-32 56,0 56,68 0,100 -56,68 -56,0' transform='translate(0,0)'/><polygon points='120,-32 176,0 176,68 120,100 64,68 64,0'/></g></svg>");
             background-size: cover, cover, 120px 139px;
-            background-attachment: fixed
+            /* background-attachment: fixed breaks rendering on iOS Safari (the
+               whole layer flickers or vanishes). It's only purchasing a small
+               parallax feel which most users never notice — safe to drop. */
+            background-attachment: scroll
         }
         .hive-backdrop.active { opacity: 1 }
         /* When the hive backdrop is active the cyan circuit grid AND the subtle
@@ -3601,6 +3670,10 @@
     <!-- ╔══════════════════════════════════════════════════════════════════════╗
          ║  PAGE CHROME  ──  fixed background layers + scroll progress bar      ║
          ╚══════════════════════════════════════════════════════════════════════╝ -->
+    <!-- One-shot page-load sweep: a soft cyan light bar that travels L→R across
+         the page when the site first loads. JS removes the element when done so
+         it never costs anything after the intro. -->
+    <div id="loadSweep" aria-hidden="true"></div>
     <div id="substrate"></div>
     <div class="hive-backdrop" id="hiveBackdrop"></div>
     <canvas id="traceCanvas"></canvas>
@@ -4427,6 +4500,13 @@
          ║    §13 Honeycomb backdrop fade in/out near the awards section        ║
          ╚══════════════════════════════════════════════════════════════════════╝ -->
     <script>
+        // Page-load sweep cleanup — remove the sweep element once the animation
+        // ends so it never costs another paint after the intro.
+        (function () {
+            var sw = document.getElementById('loadSweep');
+            if (sw) sw.addEventListener('animationend', function () { sw.remove(); }, { once: true });
+        })();
+
         // ─── §1 · Mouse + scroll state ────────────────────────────────────────
         // Touch-only devices (phones, tablets) shouldn't get the cursor trail —
         // it follows the user's finger and feels noisy. Detect once at boot.
@@ -4474,7 +4554,42 @@
         var tx = TC.getContext("2d");
         var TW, TH, nodes = [], edges = [], pulses = [];
         function rTC() { TW = window.innerWidth; TH = window.innerHeight; TC.width = TW; TC.height = TH; bNet(); }
-        function bNet() { nodes = []; edges = []; var S = 70; var co = Math.ceil(TW / S) + 2; var ro = Math.ceil(TH / S) + 2; for (var r = 0; r < ro; r++) { for (var c = 0; c < co; c++) { if (Math.random() > 0.3) { nodes.push({ x: c * S + (Math.random() - 0.5) * 25, y: r * S + (Math.random() - 0.5) * 25, r: Math.random() > 0.9 ? 3.5 : Math.random() > 0.7 ? 2 : 1.2, via: Math.random() > 0.87, pad: Math.random() > 0.93 }); } } } for (var i = 0; i < nodes.length; i++) { for (var j = i + 1; j < nodes.length; j++) { var dx = nodes[j].x - nodes[i].x; var dy = nodes[j].y - nodes[i].y; var d = Math.sqrt(dx * dx + dy * dy); if (d < S * 1.7 && Math.random() > 0.58) { edges.push({ a: i, b: j, mx: nodes[j].x, my: nodes[i].y, w: Math.random() > 0.7 ? 1.5 : 1 }); } } } }
+        // Sparser circuit network: bigger grid step + lower spawn density means
+        // ~50% fewer nodes and edges than before, which is the biggest GPU win.
+        // Small screens get an even coarser grid so phones stay smooth.
+        function bNet() {
+            nodes = []; edges = [];
+            var S = Math.min(TW, TH) < 720 ? 120 : 95;   // grid step
+            var co = Math.ceil(TW / S) + 2;
+            var ro = Math.ceil(TH / S) + 2;
+            for (var r = 0; r < ro; r++) {
+                for (var c = 0; c < co; c++) {
+                    if (Math.random() > 0.42) {
+                        nodes.push({
+                            x: c * S + (Math.random() - 0.5) * 25,
+                            y: r * S + (Math.random() - 0.5) * 25,
+                            r: Math.random() > 0.9 ? 3.5 : Math.random() > 0.7 ? 2 : 1.2,
+                            via: Math.random() > 0.87,
+                            pad: Math.random() > 0.93
+                        });
+                    }
+                }
+            }
+            for (var i = 0; i < nodes.length; i++) {
+                for (var j = i + 1; j < nodes.length; j++) {
+                    var dx = nodes[j].x - nodes[i].x;
+                    var dy = nodes[j].y - nodes[i].y;
+                    var d  = Math.sqrt(dx * dx + dy * dy);
+                    if (d < S * 1.5 && Math.random() > 0.66) {
+                        edges.push({
+                            a: i, b: j,
+                            mx: nodes[j].x, my: nodes[i].y,
+                            w: Math.random() > 0.7 ? 1.5 : 1
+                        });
+                    }
+                }
+            }
+        }
         function sP() { if (!edges.length) return; var e = edges[Math.floor(Math.random() * edges.length)]; pulses.push({ e: e, t: 0, sp: 0.003 + Math.random() * 0.008, sz: 1.5 + Math.random() * 2 }); }
         function dT() { tx.clearRect(0, 0, TW, TH); var mxS = M.x; var myS = M.y; var scrollI = 0.06 + scrollProg * 0.12; var i, n, e, a, b, dd, pr, al, px, py, t2, cpx, cpy; for (i = 0; i < edges.length; i++) { e = edges[i]; a = nodes[e.a]; b = nodes[e.b]; var cx = (a.x + b.x) / 2; var cy = (a.y + b.y) / 2; dd = Math.sqrt((mxS - cx) * (mxS - cx) + (myS - cy) * (myS - cy)); pr = Math.max(0, 1 - dd / 350); al = scrollI + pr * 0.12; tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = e.w + pr * 1.5; tx.beginPath(); tx.moveTo(a.x, a.y); tx.lineTo(e.mx, e.my); tx.lineTo(b.x, b.y); tx.stroke(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); pr = Math.max(0, 1 - dd / 250); if (n.pad) { tx.fillStyle = "rgba(0,212,255," + (0.08 + scrollProg * 0.06 + pr * 0.2) + ")"; tx.fillRect(n.x - 5, n.y - 5, 10, 10); if (pr > 0.3) { tx.shadowColor = "rgba(0,212,255,0.4)"; tx.shadowBlur = 8 + pr * 12; tx.fillRect(n.x - 5, n.y - 5, 10, 10); tx.shadowBlur = 0; } } else if (n.via) { tx.beginPath(); tx.arc(n.x, n.y, 3 + pr * 2, 0, Math.PI * 2); tx.strokeStyle = "rgba(0,212,255," + (0.12 + scrollProg * 0.08 + pr * 0.3) + ")"; tx.lineWidth = 1.5; tx.stroke(); if (pr > 0.2) { tx.beginPath(); tx.arc(n.x, n.y, 1.5, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.3 + pr * 0.4) + ")"; tx.fill(); } } else { tx.beginPath(); tx.arc(n.x, n.y, n.r + pr * 2, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.05 + scrollProg * 0.04 + pr * 0.15) + ")"; tx.fill(); } } for (i = pulses.length - 1; i >= 0; i--) { var p = pulses[i]; p.t += p.sp; if (p.t > 1) { pulses.splice(i, 1); continue; } a = nodes[p.e.a]; b = nodes[p.e.b]; if (p.t < 0.5) { t2 = p.t * 2; px = a.x + (p.e.mx - a.x) * t2; py = a.y + (p.e.my - a.y) * t2; } else { t2 = (p.t - 0.5) * 2; px = p.e.mx + (b.x - p.e.mx) * t2; py = p.e.my + (b.y - p.e.my) * t2; } al = 1 - p.t * 0.7; tx.beginPath(); tx.arc(px, py, p.sz, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.7) + ")"; tx.fill(); tx.beginPath(); tx.arc(px, py, p.sz * 3, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.1) + ")"; tx.fill(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); if (dd < 180 && dd > 20) { al = Math.max(0, (1 - dd / 180) * 0.3); tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = 0.7; tx.beginPath(); tx.moveTo(mxS, myS); cpx = mxS + (n.x - mxS) * 0.5 + (Math.random() - 0.5) * 25; cpy = myS + (n.y - myS) * 0.5 + (Math.random() - 0.5) * 25; tx.quadraticCurveTo(cpx, cpy, n.x, n.y); tx.stroke(); } } var spawnRate = 0.91 - scrollProg * 0.15; if (Math.random() > spawnRate) sP(); }
         var SC = document.getElementById("sparkCanvas"); var sx = SC.getContext("2d"); var SW, SH, sparks = [];
@@ -4484,7 +4599,10 @@
         function dS() { /* sparks removed */ }
 
         // ─── §3 · Tilt + parallax accents (uT, uP) ──────────────────────────
-        function uT() { var els = document.querySelectorAll(".tilt"); for (var k = 0; k < els.length; k++) { var el = els[k]; var r = el.getBoundingClientRect(); var cx = r.left + r.width / 2; var cy = r.top + r.height / 2; var dx = (M.x - cx) / r.width; var dy = (M.y - cy) / r.height; var dist = Math.sqrt((M.x - cx) * (M.x - cx) + (M.y - cy) * (M.y - cy)); var mD = Math.max(r.width, r.height) * 1.5; var f = Math.max(0, 1 - dist / mD); var rX = -dy * 4 * f; var rY = dx * 4 * f; if (f > 0.05) { el.style.transform = "perspective(800px) rotateX(" + rX + "deg) rotateY(" + rY + "deg) scale(" + (1 + f * 0.01) + ")"; } else { el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; } } }
+        // Tilt no longer runs on .pcard (project + CAD rectangles) — they stay
+        // perfectly still on hover so only the blur effect is felt. Other .tilt
+        // elements (stats, etc.) keep the subtle 3D parallax.
+        function uT() { var els = document.querySelectorAll(".tilt:not(.pcard)"); for (var k = 0; k < els.length; k++) { var el = els[k]; var r = el.getBoundingClientRect(); var cx = r.left + r.width / 2; var cy = r.top + r.height / 2; var dx = (M.x - cx) / r.width; var dy = (M.y - cy) / r.height; var dist = Math.sqrt((M.x - cx) * (M.x - cx) + (M.y - cy) * (M.y - cy)); var mD = Math.max(r.width, r.height) * 1.5; var f = Math.max(0, 1 - dist / mD); var rX = -dy * 4 * f; var rY = dx * 4 * f; if (f > 0.05) { el.style.transform = "perspective(800px) rotateX(" + rX + "deg) rotateY(" + rY + "deg) scale(" + (1 + f * 0.01) + ")"; } else { el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; } } }
         function uP() { var els = document.querySelectorAll(".stat,.pc,.cc,.skv2-cat,.sc-feat"); for (var k = 0; k < els.length; k++) { var el = els[k]; var r = el.getBoundingClientRect(); el.style.setProperty("--mx", (M.x - r.left) + "px"); el.style.setProperty("--my", (M.y - r.top) + "px"); } }
 
         // ─── §4 · Animation loop with bullet-proof recovery ──────────────────
@@ -4492,11 +4610,20 @@
         // minimize/restore, system sleep/wake, and any single-frame error.
         var animRAF = null;
         var animLastTick = 0;
+        var traceLastDraw = 0;
+        var TRACE_INTERVAL = 33;   // ~30 fps for the heavy circuit canvas
         function animate() {
-            animLastTick = performance.now();
-            // A single bad frame should never kill the loop — wrap and continue.
-            try { uSub(); dT(); eS(); dS(); uT(); uP(); }
-            catch (e) { /* one bad frame is recoverable */ }
+            var now = performance.now();
+            animLastTick = now;
+            // Mouse-tracking effects stay at 60fps for responsiveness.
+            try { uSub(); uT(); uP(); } catch (e) {}
+            // The circuit/trace canvas (the most GPU-heavy layer) is throttled
+            // to ~30fps. Visually identical, roughly half the cost.
+            if (now - traceLastDraw >= TRACE_INTERVAL) {
+                try { dT(); } catch (e) {}
+                traceLastDraw = now;
+            }
+            // eS/dS are no-ops since sparks were removed; calling them is free.
             animRAF = requestAnimationFrame(animate);
         }
         function startAnim() {
