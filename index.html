@@ -117,9 +117,6 @@
         }
         img, svg, canvas, video {
             -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
             user-drag: none
         }
 
@@ -178,13 +175,8 @@
         }
 
         #sparkCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9998;
-            pointer-events: none
+            /* Spark canvas kept in DOM for compatibility but visually disabled. */
+            display: none
         }
 
         #scrollPower {
@@ -503,162 +495,8 @@
             transform: rotate(-45deg) translate(4px, -4px)
         }
 
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            z-index: 2
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 2rem;
-            max-width: 850px
-        }
-
-        .hero-des {
-            font-family: var(--fs);
-            font-size: .6rem;
-            letter-spacing: .25em;
-            text-transform: uppercase;
-            color: var(--acc);
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fu .8s .2s forwards
-        }
-
-        .hero-des::before,
-        .hero-des::after {
-            content: ' — ';
-            color: var(--txt3)
-        }
-
-        .hero-name {
-            font-family: var(--fs);
-            font-size: clamp(2rem, 5.5vw, 4rem);
-            font-weight: 400;
-            line-height: 1.15;
-            letter-spacing: .02em;
-            margin-bottom: 1rem;
-            opacity: 0;
-            animation: fu .8s .4s forwards
-        }
-
-        .hero-name .c {
-            color: var(--acc2);
-            text-shadow: 0 0 30px var(--acc3)
-        }
-
-        .hero-title {
-            font-size: clamp(.85rem, 1.6vw, 1.05rem);
-            color: var(--txt2);
-            font-weight: 300;
-            letter-spacing: .08em;
-            margin-bottom: .8rem;
-            opacity: 0;
-            animation: fu .8s .6s forwards
-        }
-
-        .hero-tag {
-            font-family: var(--fs);
-            font-size: .72rem;
-            color: var(--txt3);
-            letter-spacing: .04em;
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: fu .8s .8s forwards
-        }
-
-        .hero-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: .6rem;
-            font-family: var(--fs);
-            font-size: .72rem;
-            padding: .8rem 2rem;
-            background: transparent;
-            color: var(--acc);
-            border: 1px solid var(--acc3);
-            cursor: pointer;
-            text-decoration: none;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            transition: all .4s;
-            opacity: 0;
-            animation: fu .8s 1s forwards;
-            position: relative;
-            overflow: hidden
-        }
-
-        .hero-cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--acc);
-            opacity: 0;
-            transition: opacity .4s
-        }
-
-        .hero-cta:hover {
-            color: var(--bg);
-            border-color: var(--acc);
-            box-shadow: 0 0 25px var(--acc3)
-        }
-
-        .hero-cta:hover::before {
-            opacity: 1
-        }
-
-        .hero-cta>* {
-            position: relative;
-            z-index: 1
-        }
-
-        .hero-sc {
-            position: absolute;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-            opacity: 0;
-            animation: fu .8s 1.4s forwards
-        }
-
-        .hero-sc-line {
-            width: 1px;
-            height: 50px;
-            position: relative;
-            overflow: hidden
-        }
-
-        .hero-sc-line::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            left: 0;
-            width: 1px;
-            height: 50px;
-            background: linear-gradient(to bottom, transparent, var(--acc));
-            animation: sd 2s infinite
-        }
-
-        @keyframes sd {
-            0% {
-                top: -50px
-            }
-
-            100% {
-                top: 50px
-            }
-        }
+        /* (Removed: ~150 lines of legacy .hero* hero-banner styles — the design
+            no longer uses a hero banner; the About section opens the page now.) */
 
         section {
             padding: clamp(2rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 4rem);
@@ -772,10 +610,7 @@
         .pins-h,
         .pins-v {
             position: absolute;
-            display: flex
-        }
-
-        .pins-v {
+            display: flex;
             flex-direction: column;
             gap: 8px
         }
@@ -1405,7 +1240,6 @@
             margin-bottom: .4rem
         }
 
-        /* === GREETING MODAL (clicked logo) === */
         /* ───── §10 · Greeting modal (gm) ──────────────────────────────────── */
         .gm {
             position: fixed;
@@ -1452,28 +1286,7 @@
             padding: clamp(2rem, 6vh, 4rem) 0
         }
 
-        .gm-x {
-            position: absolute;
-            top: 1.4rem;
-            right: 1.4rem;
-            background: transparent;
-            border: 1px solid var(--acc3);
-            color: var(--acc);
-            width: 38px;
-            height: 38px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .25s
-        }
-
-        .gm-x:hover {
-            background: var(--acc);
-            color: var(--bg);
-            transform: rotate(90deg)
-        }
+        /* (Removed: .gm-x rules — the red terminal dot is now the close button.) */
 
         /* Greeting cycling — fade + slide animation, framer-motion AnimatePresence style */
         .gm-hi-wrap {
@@ -1620,7 +1433,6 @@
             }
         }
 
-        /* === NEW: RECTANGULAR HOVER-BLUR PROJECT CARDS === */
         /* ───── §6 · Projects (header, grid arrows, cards, modals) ────────── */
         .proj-header {
             text-align: center;
@@ -1683,7 +1495,6 @@
             }
         }
 
-        /* Skills marquee — full-width horizontal scrolling rows */
         /* ───── §7 · Skills marquee (left + right rows) ────────────────────── */
         .marquee-section {
             margin: .5rem 0 .75rem;
@@ -1742,7 +1553,6 @@
             letter-spacing: .02em
         }
 
-        /* Quote section — above Let's Connect */
         /* ───── §9 · Quote + Contact ──────────────────────────────────────── */
         .quote-section {
             padding: 0.5rem clamp(1.5rem, 4vw, 4rem) clamp(3rem, 6vw, 5rem);
@@ -2588,9 +2398,23 @@
         @media (prefers-reduced-motion: no-preference) {
             html { scroll-behavior: smooth }
         }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important
+            }
+        }
         body { -webkit-tap-highlight-color: transparent }
         img, video {
             content-visibility: auto;
+        }
+        /* GPU-promote anything the user can hover/scroll so transitions stay
+           on the compositor thread (no layout thrash, no jank). */
+        .pcard, .hex-cell, .hex-top, .stat, .skv2-cat, .pgrid-arrow,
+        .nav-logo, .marquee-track, .awinfo-overlay, .scinfo-overlay {
+            will-change: transform, opacity
         }
 
         /* ───── §11 · Reveal-on-scroll utility — applied to .rv elements via JS */
@@ -3756,10 +3580,12 @@
             background-attachment: fixed
         }
         .hive-backdrop.active { opacity: 1 }
-        /* When the hive is active, the trace canvas (cyan grid) softens so the warm
-           honey palette can read clearly. */
-        .hive-backdrop.active ~ #traceCanvas { opacity: .35; transition: opacity .8s ease }
-        #traceCanvas { transition: opacity .8s ease }
+        /* When the hive backdrop is active the cyan circuit grid AND the subtle
+           grid substrate are fully hidden so the warm honey palette has the stage
+           to itself. They fade back in once we leave the awards section. */
+        .hive-backdrop.active ~ #traceCanvas,
+        .hive-backdrop.active ~ #substrate { opacity: 0 }
+        #traceCanvas, #substrate { transition: opacity .8s ease }
 
         .ainfo-desc {
             font-size: .85rem;
@@ -4653,8 +4479,9 @@
         function dT() { tx.clearRect(0, 0, TW, TH); var mxS = M.x; var myS = M.y; var scrollI = 0.06 + scrollProg * 0.12; var i, n, e, a, b, dd, pr, al, px, py, t2, cpx, cpy; for (i = 0; i < edges.length; i++) { e = edges[i]; a = nodes[e.a]; b = nodes[e.b]; var cx = (a.x + b.x) / 2; var cy = (a.y + b.y) / 2; dd = Math.sqrt((mxS - cx) * (mxS - cx) + (myS - cy) * (myS - cy)); pr = Math.max(0, 1 - dd / 350); al = scrollI + pr * 0.12; tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = e.w + pr * 1.5; tx.beginPath(); tx.moveTo(a.x, a.y); tx.lineTo(e.mx, e.my); tx.lineTo(b.x, b.y); tx.stroke(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); pr = Math.max(0, 1 - dd / 250); if (n.pad) { tx.fillStyle = "rgba(0,212,255," + (0.08 + scrollProg * 0.06 + pr * 0.2) + ")"; tx.fillRect(n.x - 5, n.y - 5, 10, 10); if (pr > 0.3) { tx.shadowColor = "rgba(0,212,255,0.4)"; tx.shadowBlur = 8 + pr * 12; tx.fillRect(n.x - 5, n.y - 5, 10, 10); tx.shadowBlur = 0; } } else if (n.via) { tx.beginPath(); tx.arc(n.x, n.y, 3 + pr * 2, 0, Math.PI * 2); tx.strokeStyle = "rgba(0,212,255," + (0.12 + scrollProg * 0.08 + pr * 0.3) + ")"; tx.lineWidth = 1.5; tx.stroke(); if (pr > 0.2) { tx.beginPath(); tx.arc(n.x, n.y, 1.5, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.3 + pr * 0.4) + ")"; tx.fill(); } } else { tx.beginPath(); tx.arc(n.x, n.y, n.r + pr * 2, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.05 + scrollProg * 0.04 + pr * 0.15) + ")"; tx.fill(); } } for (i = pulses.length - 1; i >= 0; i--) { var p = pulses[i]; p.t += p.sp; if (p.t > 1) { pulses.splice(i, 1); continue; } a = nodes[p.e.a]; b = nodes[p.e.b]; if (p.t < 0.5) { t2 = p.t * 2; px = a.x + (p.e.mx - a.x) * t2; py = a.y + (p.e.my - a.y) * t2; } else { t2 = (p.t - 0.5) * 2; px = p.e.mx + (b.x - p.e.mx) * t2; py = p.e.my + (b.y - p.e.my) * t2; } al = 1 - p.t * 0.7; tx.beginPath(); tx.arc(px, py, p.sz, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.7) + ")"; tx.fill(); tx.beginPath(); tx.arc(px, py, p.sz * 3, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.1) + ")"; tx.fill(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); if (dd < 180 && dd > 20) { al = Math.max(0, (1 - dd / 180) * 0.3); tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = 0.7; tx.beginPath(); tx.moveTo(mxS, myS); cpx = mxS + (n.x - mxS) * 0.5 + (Math.random() - 0.5) * 25; cpy = myS + (n.y - myS) * 0.5 + (Math.random() - 0.5) * 25; tx.quadraticCurveTo(cpx, cpy, n.x, n.y); tx.stroke(); } } var spawnRate = 0.91 - scrollProg * 0.15; if (Math.random() > spawnRate) sP(); }
         var SC = document.getElementById("sparkCanvas"); var sx = SC.getContext("2d"); var SW, SH, sparks = [];
         function rSC() { SW = window.innerWidth; SH = window.innerHeight; SC.width = SW; SC.height = SH; }
-        function eS() { if (IS_TOUCH) return; var sp = Math.sqrt(M.vx * M.vx + M.vy * M.vy); if (sp > 2) { var c = Math.min(Math.floor(sp / 4), 4); for (var i = 0; i < c; i++) { sparks.push({ x: M.x + (Math.random() - 0.5) * 6, y: M.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 2 + M.vx * 0.1, vy: (Math.random() - 0.5) * 2 + M.vy * 0.1, life: 1, dec: 0.015 + Math.random() * 0.025, sz: 1 + Math.random() * 2 }); } } }
-        function dS() { sx.clearRect(0, 0, SW, SH); for (var i = sparks.length - 1; i >= 0; i--) { var s = sparks[i]; s.x += s.vx; s.y += s.vy; s.vy += 0.05; s.life -= s.dec; if (s.life <= 0) { sparks.splice(i, 1); continue; } sx.beginPath(); sx.arc(s.x, s.y, s.sz * s.life, 0, Math.PI * 2); sx.fillStyle = "rgba(0,212,255," + (s.life * 0.7) + ")"; sx.fill(); sx.beginPath(); sx.arc(s.x, s.y, s.sz * s.life * 3, 0, Math.PI * 2); sx.fillStyle = "rgba(0,212,255," + (s.life * 0.08) + ")"; sx.fill(); } }
+        // Cursor sparks disabled — keep no-op stubs so the animation loop stays intact.
+        function eS() { /* sparks removed */ }
+        function dS() { /* sparks removed */ }
 
         // ─── §3 · Tilt + parallax accents (uT, uP) ──────────────────────────
         function uT() { var els = document.querySelectorAll(".tilt"); for (var k = 0; k < els.length; k++) { var el = els[k]; var r = el.getBoundingClientRect(); var cx = r.left + r.width / 2; var cy = r.top + r.height / 2; var dx = (M.x - cx) / r.width; var dy = (M.y - cy) / r.height; var dist = Math.sqrt((M.x - cx) * (M.x - cx) + (M.y - cy) * (M.y - cy)); var mD = Math.max(r.width, r.height) * 1.5; var f = Math.max(0, 1 - dist / mD); var rX = -dy * 4 * f; var rY = dx * 4 * f; if (f > 0.05) { el.style.transform = "perspective(800px) rotateX(" + rX + "deg) rotateY(" + rY + "deg) scale(" + (1 + f * 0.01) + ")"; } else { el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; } } }
@@ -4849,7 +4676,8 @@
             }
         }
         document.addEventListener("keydown", function (e) { if (e.key === "Escape") { cLB(); cG(); } });
-        document.addEventListener("click", function (e) { if (IS_TOUCH) return; for (var i = 0; i < 8; i++) { var ang = Math.random() * Math.PI * 2; var spd = 2 + Math.random() * 4; sparks.push({ x: e.clientX, y: e.clientY, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, life: 1, dec: 0.02 + Math.random() * 0.02, sz: 1.5 + Math.random() * 2.5 }); } });
+        // Click-burst sparks disabled (kept commented for reference).
+        // document.addEventListener("click", ... sparks.push ...);
 
         // ─── §8 · Sense Cube auto-slider (legacy) + lightbox helpers ────────
         var scCur = 0;
