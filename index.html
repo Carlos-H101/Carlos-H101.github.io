@@ -96,7 +96,12 @@
 
         body {
             font-family: var(--fb);
-            background: var(--bg);
+            /* Solid color background — no canvases, no GPU. Defaults to pure
+               black; once the user scrolls into the Experience section we add
+               the .past-experience class which fades to a premium dark gray
+               (Apple-style #1c1c1e) for the rest of the page. */
+            background-color: #0a0a0a;
+            transition: background-color .9s ease;
             color: var(--txt);
             line-height: 1.6;
             overflow-x: hidden;
@@ -128,6 +133,18 @@
             background: transparent;
             color: inherit
         }
+
+        /* Scroll-keyed background swap — pure black → premium dark gray.
+           #1c1c1e is the SF / macOS dark mode secondary surface; it's the
+           "premium" gray most luxury / Apple-style sites land on. */
+        body.past-experience { background-color: #1c1c1e }
+
+        /* Kill the GPU-heavy background layers entirely. We keep the elements
+           in the DOM (other code references them) but never paint them. */
+        #substrate,
+        #traceCanvas,
+        #sparkCanvas,
+        body::after { display: none !important }
 
         /* One-shot page-load illumination sweep — travels left → right once. */
         #loadSweep {
@@ -1972,7 +1989,9 @@
 
         /* Subtle blur only when a card is actually hovered (not when mouse is in the gap) */
         .pgrid:has(.pcard:hover) .pcard:not(:hover) {
-            filter: blur(8px);
+            /* Light blur — enough to push focus to the hovered card while still
+               leaving the other photos readable. */
+            filter: blur(3px);
             opacity: 1;
             transition: filter .35s ease
         }
@@ -4591,7 +4610,9 @@
             }
         }
         function sP() { if (!edges.length) return; var e = edges[Math.floor(Math.random() * edges.length)]; pulses.push({ e: e, t: 0, sp: 0.003 + Math.random() * 0.008, sz: 1.5 + Math.random() * 2 }); }
-        function dT() { tx.clearRect(0, 0, TW, TH); var mxS = M.x; var myS = M.y; var scrollI = 0.06 + scrollProg * 0.12; var i, n, e, a, b, dd, pr, al, px, py, t2, cpx, cpy; for (i = 0; i < edges.length; i++) { e = edges[i]; a = nodes[e.a]; b = nodes[e.b]; var cx = (a.x + b.x) / 2; var cy = (a.y + b.y) / 2; dd = Math.sqrt((mxS - cx) * (mxS - cx) + (myS - cy) * (myS - cy)); pr = Math.max(0, 1 - dd / 350); al = scrollI + pr * 0.12; tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = e.w + pr * 1.5; tx.beginPath(); tx.moveTo(a.x, a.y); tx.lineTo(e.mx, e.my); tx.lineTo(b.x, b.y); tx.stroke(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); pr = Math.max(0, 1 - dd / 250); if (n.pad) { tx.fillStyle = "rgba(0,212,255," + (0.08 + scrollProg * 0.06 + pr * 0.2) + ")"; tx.fillRect(n.x - 5, n.y - 5, 10, 10); if (pr > 0.3) { tx.shadowColor = "rgba(0,212,255,0.4)"; tx.shadowBlur = 8 + pr * 12; tx.fillRect(n.x - 5, n.y - 5, 10, 10); tx.shadowBlur = 0; } } else if (n.via) { tx.beginPath(); tx.arc(n.x, n.y, 3 + pr * 2, 0, Math.PI * 2); tx.strokeStyle = "rgba(0,212,255," + (0.12 + scrollProg * 0.08 + pr * 0.3) + ")"; tx.lineWidth = 1.5; tx.stroke(); if (pr > 0.2) { tx.beginPath(); tx.arc(n.x, n.y, 1.5, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.3 + pr * 0.4) + ")"; tx.fill(); } } else { tx.beginPath(); tx.arc(n.x, n.y, n.r + pr * 2, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (0.05 + scrollProg * 0.04 + pr * 0.15) + ")"; tx.fill(); } } for (i = pulses.length - 1; i >= 0; i--) { var p = pulses[i]; p.t += p.sp; if (p.t > 1) { pulses.splice(i, 1); continue; } a = nodes[p.e.a]; b = nodes[p.e.b]; if (p.t < 0.5) { t2 = p.t * 2; px = a.x + (p.e.mx - a.x) * t2; py = a.y + (p.e.my - a.y) * t2; } else { t2 = (p.t - 0.5) * 2; px = p.e.mx + (b.x - p.e.mx) * t2; py = p.e.my + (b.y - p.e.my) * t2; } al = 1 - p.t * 0.7; tx.beginPath(); tx.arc(px, py, p.sz, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.7) + ")"; tx.fill(); tx.beginPath(); tx.arc(px, py, p.sz * 3, 0, Math.PI * 2); tx.fillStyle = "rgba(0,212,255," + (al * 0.1) + ")"; tx.fill(); } for (i = 0; i < nodes.length; i++) { n = nodes[i]; dd = Math.sqrt((mxS - n.x) * (mxS - n.x) + (myS - n.y) * (myS - n.y)); if (dd < 180 && dd > 20) { al = Math.max(0, (1 - dd / 180) * 0.3); tx.strokeStyle = "rgba(0,212,255," + al + ")"; tx.lineWidth = 0.7; tx.beginPath(); tx.moveTo(mxS, myS); cpx = mxS + (n.x - mxS) * 0.5 + (Math.random() - 0.5) * 25; cpy = myS + (n.y - myS) * 0.5 + (Math.random() - 0.5) * 25; tx.quadraticCurveTo(cpx, cpy, n.x, n.y); tx.stroke(); } } var spawnRate = 0.91 - scrollProg * 0.15; if (Math.random() > spawnRate) sP(); }
+        // dT() — circuit canvas paint. The canvas itself is now display:none, so
+        // skip the expensive draw routine entirely (saves CPU + GPU time).
+        function dT() { /* canvas hidden — see CSS '#traceCanvas { display:none }' */ }
         var SC = document.getElementById("sparkCanvas"); var sx = SC.getContext("2d"); var SW, SH, sparks = [];
         function rSC() { SW = window.innerWidth; SH = window.innerHeight; SC.width = SW; SC.height = SH; }
         // Cursor sparks disabled — keep no-op stubs so the animation loop stays intact.
@@ -4689,6 +4710,25 @@
         });
 
         // ─── §6 · Navigation toggles + reveal-on-scroll observer ────────────
+        // Scroll-keyed background swap — black until the user reaches Experience,
+        // then premium dark gray. Pure CSS class toggle, zero GPU cost.
+        (function () {
+            var exp = document.getElementById("experience");
+            if (!exp) return;
+            var pending = false;
+            function syncBg() {
+                pending = false;
+                var rect = exp.getBoundingClientRect();
+                var trigger = window.innerHeight * 0.55;
+                document.body.classList.toggle("past-experience", rect.top < trigger);
+            }
+            window.addEventListener("scroll", function () {
+                if (!pending) { pending = true; requestAnimationFrame(syncBg); }
+            }, { passive: true });
+            window.addEventListener("resize", syncBg);
+            syncBg();
+        })();
+
         var nav = document.getElementById("nav");
         window.addEventListener("scroll", function () { nav.classList.toggle("scrolled", window.scrollY > 50); });
         var hb = document.getElementById("hb"); var nl = document.getElementById("nl");
@@ -4827,8 +4867,10 @@
 
             var state = [];
             tracks.forEach(function (t) {
-                var dir = t.classList.contains("marquee-track--right") ? 1 : -1;
-                state.push({ el: t, x: dir === 1 ? -1 : 0, dir: dir, half: 0 });
+                // baseDir = direction when scrolling DOWN. When the user scrolls
+                // UP we flip it on the fly so the marquees feel "reactive."
+                var baseDir = t.classList.contains("marquee-track--right") ? 1 : -1;
+                state.push({ el: t, x: baseDir === 1 ? -1 : 0, dir: baseDir, baseDir: baseDir, half: 0 });
             });
 
             function measure() {
@@ -4851,11 +4893,24 @@
             var lastT = performance.now();
             var lastFrame = lastT;
 
+            // Scroll DIRECTION flips the marquee direction. Scrolling down keeps
+            // each track on its base direction; scrolling up inverts both rows.
+            var scrollDirSign = 1;   // 1 = down (base), -1 = up (flipped)
             window.addEventListener("scroll", function () {
                 var now = performance.now();
-                var dy = Math.abs(window.scrollY - lastY);
+                var rawDy = window.scrollY - lastY;
+                var dy = Math.abs(rawDy);
                 var dt = Math.max(1, now - lastT);
                 var v = dy / dt; // px per ms
+                if (rawDy !== 0) {
+                    var sign = rawDy > 0 ? 1 : -1;
+                    if (sign !== scrollDirSign) {
+                        scrollDirSign = sign;
+                        for (var i = 0; i < state.length; i++) {
+                            state[i].dir = state[i].baseDir * scrollDirSign;
+                        }
+                    }
+                }
                 lastY = window.scrollY;
                 lastT = now;
                 var boost = 1 + Math.min(MAX_MULT - 1, v * BOOST_GAIN * 1000);
