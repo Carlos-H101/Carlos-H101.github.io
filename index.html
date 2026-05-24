@@ -11,10 +11,10 @@
         href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700&family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google's <model-viewer> web component — drives the interactive 3D CAD cards + modal.
-         Loaded from unpkg (mirrors npm directly) and pinned to v3.x for stability. -->
+    <!-- <model-viewer> is loaded ON-DEMAND the first time a user clicks a CAD
+         card (see the loadModelViewer() helper in the script section). This
+         keeps ~300 KB of WebGL JS off the initial page load. -->
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <script type="module" src="https://unpkg.com/@google/model-viewer@3/dist/model-viewer.min.js"></script>
     <!-- file:// origins cannot fetch .glb files, so when the page is opened as a
          local file we lazily pull in the embedded base64 bundle. Hosted deploys
          skip the file (location.protocol !== "file:") so production stays lean. -->
@@ -255,13 +255,11 @@
             justify-content: space-between;
             padding: 0 clamp(1.5rem, 4vw, 4rem);
             border-bottom: 1px solid var(--acc5);
-            transition: background .4s, backdrop-filter .4s
+            transition: background .4s
         }
 
         .nav.scrolled {
             background: rgba(10, 10, 10, .92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px)
         }
 
         .nav-logo {
@@ -324,7 +322,7 @@
         .nav-logo-mark .dot {
             fill: var(--acc);
             filter: drop-shadow(0 0 5px rgba(0, 212, 255, .85));
-            animation: logoDot 2.6s ease-in-out infinite
+            animation: none
         }
         .nav-logo:hover .nav-logo-mark .arc {
             stroke-dashoffset: -110;
@@ -417,8 +415,6 @@
             color: rgba(255, 255, 255, .82);
             padding: .34rem .7rem .34rem .55rem;
             background: rgba(20, 20, 22, .6);
-            -webkit-backdrop-filter: saturate(160%) blur(12px);
-            backdrop-filter: saturate(160%) blur(12px);
             border: 0.5px solid rgba(0, 212, 255, .35);
             border-radius: 999px;
             white-space: nowrap;
@@ -431,7 +427,7 @@
         .nav-logo-cta .nav-cta-arrow {
             color: var(--acc);
             font-size: .68rem;
-            animation: navCtaArrow 1.6s ease-in-out infinite;
+            animation: none;
             filter: drop-shadow(0 0 4px rgba(0, 212, 255, .6))
         }
         .nav-logo-cta .dot {
@@ -439,7 +435,7 @@
             border-radius: 50%;
             background: var(--acc);
             box-shadow: 0 0 6px rgba(0, 212, 255, .8);
-            animation: navCtaPulse 2.2s ease-in-out infinite
+            animation: none
         }
         .nav-logo:hover .nav-logo-cta {
             opacity: 0;
@@ -1513,7 +1509,7 @@
 
         .proj-scroll-cue__arrows i {
             font-size: .65rem;
-            animation: cuePulse 1.6s ease-in-out infinite
+            animation: none
         }
 
         .proj-scroll-cue__arrows i:nth-child(2) {
@@ -1718,8 +1714,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px) saturate(140%);
-            -webkit-backdrop-filter: blur(10px) saturate(140%);
             box-shadow: 0 8px 28px rgba(0, 0, 0, .55), 0 0 24px var(--acc6), inset 0 0 0 1px rgba(255, 255, 255, .04);
             transition: opacity .35s ease, transform .35s cubic-bezier(.2, .8, .2, 1), background .25s ease, color .25s ease, box-shadow .25s ease;
             opacity: 0;
@@ -1930,8 +1924,6 @@
             color: rgba(255, 255, 255, .82);
             padding: .42rem .85rem .42rem .65rem;
             background: rgba(20, 20, 22, .55);
-            -webkit-backdrop-filter: saturate(160%) blur(14px);
-            backdrop-filter: saturate(160%) blur(14px);
             border: 0.5px solid rgba(255, 255, 255, .14);
             border-radius: 999px;
             z-index: 4;
@@ -1945,7 +1937,7 @@
             border-radius: 50%;
             background: rgba(255, 255, 255, .85);
             box-shadow: 0 0 6px rgba(255, 255, 255, .6);
-            animation: hintDot 2.4s ease-in-out infinite
+            animation: none
         }
         .pcard:hover .pcard__hint {
             opacity: 1;
@@ -2359,8 +2351,7 @@
             height: 100vh;
             z-index: 2000;
             background: rgba(10, 10, 10, .94);
-            backdrop-filter: blur(12px);
-            justify-content: center;
+justify-content: center;
             align-items: center;
             cursor: zoom-out
         }
@@ -2554,8 +2545,7 @@
                 left: 0;
                 right: 0;
                 background: rgba(10, 10, 10, .97);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
+flex-direction: column;
                 padding: 2rem;
                 gap: 1.5rem;
                 border-bottom: 1px solid var(--acc5)
@@ -2594,8 +2584,6 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, .72);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -2693,8 +2681,6 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, .78);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -2898,8 +2884,6 @@
             padding: .25rem .55rem;
             color: var(--acc2);
             background: rgba(10, 14, 18, .55);
-            -webkit-backdrop-filter: saturate(160%) blur(10px);
-            backdrop-filter: saturate(160%) blur(10px);
             border: 1px solid var(--acc3);
             z-index: 4
         }
@@ -2910,8 +2894,6 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, .82);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -3229,22 +3211,20 @@
             color: #ffffff;
             padding: .3rem .7rem .3rem .55rem;
             background: rgba(15, 15, 17, .58);
-            -webkit-backdrop-filter: blur(10px) saturate(160%);
-            backdrop-filter: blur(10px) saturate(160%);
             border: 0.5px solid rgba(255, 255, 255, .18);
             border-radius: 999px;
             z-index: 4;
             pointer-events: none;
             box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
             transition: opacity 600ms ease, transform 600ms ease;
-            animation: hexCueFloat 3.2s ease-in-out infinite
+            animation: none
         }
         .hex-click-cue .dot {
             width: 5px; height: 5px;
             border-radius: 50%;
             background: var(--dock-color, var(--acc));
             box-shadow: 0 0 8px var(--dock-color, var(--acc));
-            animation: hexCuePulse 1.6s ease-in-out infinite
+            animation: none
         }
         .hex-cell:hover .hex-click-cue {
             opacity: 0;
@@ -3463,8 +3443,6 @@
             top: clamp(1rem, 3vw, 2rem);
             right: clamp(1rem, 3vw, 2rem);
             background: rgba(20, 20, 22, .8);
-            -webkit-backdrop-filter: blur(14px) saturate(160%);
-            backdrop-filter: blur(14px) saturate(160%);
             border: 1px solid rgba(255, 255, 255, .14);
             color: #ffffff;
             cursor: pointer;
@@ -3522,8 +3500,6 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, .72);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -4619,12 +4595,11 @@
         function eS() { /* sparks removed */ }
         function dS() { /* sparks removed */ }
 
-        // ─── §3 · Tilt + parallax accents (uT, uP) ──────────────────────────
-        // Tilt no longer runs on .pcard (project + CAD rectangles) — they stay
-        // perfectly still on hover so only the blur effect is felt. Other .tilt
-        // elements (stats, etc.) keep the subtle 3D parallax.
-        function uT() { var els = document.querySelectorAll(".tilt:not(.pcard)"); for (var k = 0; k < els.length; k++) { var el = els[k]; var r = el.getBoundingClientRect(); var cx = r.left + r.width / 2; var cy = r.top + r.height / 2; var dx = (M.x - cx) / r.width; var dy = (M.y - cy) / r.height; var dist = Math.sqrt((M.x - cx) * (M.x - cx) + (M.y - cy) * (M.y - cy)); var mD = Math.max(r.width, r.height) * 1.5; var f = Math.max(0, 1 - dist / mD); var rX = -dy * 4 * f; var rY = dx * 4 * f; if (f > 0.05) { el.style.transform = "perspective(800px) rotateX(" + rX + "deg) rotateY(" + rY + "deg) scale(" + (1 + f * 0.01) + ")"; } else { el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; } } }
-        function uP() { var els = document.querySelectorAll(".stat,.pc,.cc,.skv2-cat,.sc-feat"); for (var k = 0; k < els.length; k++) { var el = els[k]; var r = el.getBoundingClientRect(); el.style.setProperty("--mx", (M.x - r.left) + "px"); el.style.setProperty("--my", (M.y - r.top) + "px"); } }
+        // ─── §3 · Tilt + parallax accents (disabled to save GPU) ────────────
+        // Tilt + per-element mouse-position parallax are both off. We keep
+        // empty stubs so the animation loop's call signature stays intact.
+        function uT() { /* tilt disabled */ }
+        function uP() { /* per-card mouse parallax disabled */ }
 
         // ─── §4 · Animation loop with bullet-proof recovery ──────────────────
         // The grid + spark + tilt loop must survive: tab-hide/show, window
@@ -5301,12 +5276,31 @@
                 '</div>';
             document.body.appendChild(cadOverlay);
 
+            // Lazy-load <model-viewer> the first time a CAD card is clicked.
+            // 300 KB of WebGL JS doesn't ship until the user actually wants 3D.
+            var modelViewerLoading = null;
+            function loadModelViewer() {
+                if (window.customElements && customElements.get('model-viewer')) {
+                    return Promise.resolve();
+                }
+                if (modelViewerLoading) return modelViewerLoading;
+                modelViewerLoading = new Promise(function (resolve) {
+                    var s = document.createElement('script');
+                    s.type = 'module';
+                    s.src  = 'https://unpkg.com/@google/model-viewer@3/dist/model-viewer.min.js';
+                    s.onload = function () { resolve(); };
+                    document.head.appendChild(s);
+                });
+                return modelViewerLoading;
+            }
+
             function openCadModal(card) {
                 // The card itself shows a static poster image; the interactive 3D
                 // model lives only inside this modal. GLB source comes from the
                 // embedded base64 bundle (file:// origins) or the file path on the
                 // card (anywhere it's hosted properly). Poster + title come from
                 // the card's data attributes / DOM.
+                loadModelViewer();
                 var src    = (window.CAD_GLB && window.CAD_GLB[card.dataset.cad])
                           || card.dataset.glb
                           || '';
