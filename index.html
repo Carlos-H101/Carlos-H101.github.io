@@ -3779,7 +3779,7 @@ flex-direction: column;
                     </div>
                 </div>
             </div>
-            <div class="pcard tilt cn-card" data-cn="1">
+            <div class="pcard tilt cn-card" data-video="./Worthy%20Images/Smart%20Navigation%20Cane.mp4" data-status-icon="fa-trophy">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__fallback"><i class="fas fa-lightbulb"></i></div>
                 <div class="pcard__bg" style="background-image:url('./Worthy%20Images/Cane%20Project.webp')"></div>
@@ -3823,7 +3823,7 @@ flex-direction: column;
                     </div>
                 </div>
             </div>
-            <div class="pcard tilt im-card" data-im="1">
+            <div class="pcard tilt im-card" data-video="./Worthy%20Images/Iron%20Man%20Helmet%20video.mp4" data-status-icon="fa-mask">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__fallback"><i class="fas fa-mask"></i></div>
                 <div class="pcard__bg" style="background-image:url('./Worthy%20Images/iron-man-helmet.webp')"></div>
@@ -3845,7 +3845,7 @@ flex-direction: column;
                     </div>
                 </div>
             </div>
-            <div class="pcard tilt fb-card" data-fb="1">
+            <div class="pcard tilt fb-card" data-video="./Worthy%20Images/4%20bit%20calculator%20video.mp4" data-status-icon="fa-microchip">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__fallback"><i class="fas fa-microchip"></i></div>
                 <div class="pcard__bg" style="background-image:url('./Worthy%20Images/4-bit-transistor-calculator.webp')"></div>
@@ -3866,7 +3866,7 @@ flex-direction: column;
                     </div>
                 </div>
             </div>
-            <div class="pcard tilt ct-card" data-ct="1">
+            <div class="pcard tilt ct-card" data-video="./Worthy%20Images/Counter%20Timer%20Circuit%20video.mp4" data-status-icon="fa-clock">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__fallback"><i class="fas fa-broadcast-tower"></i></div>
                 <div class="pcard__bg" style="background-image:url('./Worthy%20Images/Circuit%20Counter%20Timer.webp')"></div>
@@ -4930,49 +4930,25 @@ flex-direction: column;
                 return { open: open, close: close };
             }
 
-            // ── Iron Man Helmet ─────────────────────────────────────────────────
-            var imModal = buildVideoModal({
-                video:      './Worthy%20Images/Iron%20Man%20Helmet%20video.mp4',
-                statusIcon: 'fa-mask',
-                status:     'Complete · Wearable',
-                cat:        'Product Design · CAD',
-                title:      'Iron Man Helmet',
-                body:       'A wearable, screen-accurate Iron Man helmet — modeled in <strong>Fusion 360</strong>, 3D printed, wired, and assembled from scratch. The faceplate splits along the same seam as the films and pivots out of the way through a four-bar linkage tuned in CAD before any plastic was printed. Inside the eye sockets are two small LCD panels that boot to a stylized HUD and stay aligned with the wearer\'s line of sight. A microcontroller in the chin runs a soft-start curve so the servos don\'t slam open or shut, and embedded magnets at the visor seam hold the closed position without keeping the servos under torque.',
-                tags:       ['Fusion 360', '3D Printing', 'Servos', 'LCD HUD', 'Microcontroller']
-            });
-
-            // ── 4-Bit Transistor Calculator ─────────────────────────────────────
-            var fbModal = buildVideoModal({
-                video:      './Worthy%20Images/4%20bit%20calculator%20video.mp4',
-                statusIcon: 'fa-microchip',
-                status:     'Complete · Discrete Logic',
-                cat:        'Digital Logic · Transistors',
-                title:      '4-Bit Transistor Calculator',
-                body:       'A working 4-bit calculator built entirely out of <strong>discrete BJTs</strong> — no microcontrollers, no logic ICs, no shortcuts. Every gate is constructed from transistors and resistors: NAND first, then NOT/AND/OR/XOR derived from NANDs, just like a CMOS process flow. Those primitives stack into <strong>full adders with carry-in / carry-out</strong>, chained four wide for 4-bit add/subtract. The 7-segment display is driven by a transistor-only decoder built from the same logic tree. The whole thing lives on hand-wired perfboard — 200+ transistors, point-to-point wired — making addition feel less like an instruction and more like physics.',
-                tags:       ['Discrete BJTs', 'Adders', 'Carry Logic', '7-Seg Driver', 'Perfboard']
-            });
-
-            // ── Smart Navigation Cane ───────────────────────────────────────────
-            var cnModal = buildVideoModal({
-                video:      './Worthy%20Images/Smart%20Navigation%20Cane.mp4',
-                statusIcon: 'fa-trophy',
-                status:     '1st Place · Hackathon · Built in < 24 h',
-                cat:        'Accessibility · Embedded',
-                title:      'Smart Navigation Cane',
-                body:       'Built end-to-end during a <strong>hackathon in under 24 hours</strong> — hardware, firmware, mobile pairing, and the full demo — and took home <strong>1st place</strong>. A navigation cane for blind and visually impaired users that turns Google Maps directions into something the hand can feel. The cane pairs to the user\'s phone and pulls live turn-by-turn instructions from the <strong>Maps Directions API</strong>. Three small servos in the handle deliver distinct cue patterns for "left," "right," and "straight ahead," while an <strong>ultrasonic sensor</strong> at the lower end sweeps the path and vibrates with increasing intensity as obstacles get closer — giving the user a depth feel of what\'s in front of them. Code, wiring, and 3D-printed handle were all built within the hackathon window.<br><br><strong>Where it can go from here:</strong> the obvious upgrades are a tighter custom PCB to replace the dev board, a longer-lasting battery with on-board charge management, and IMU-based dead-reckoning so the cane keeps guiding through GPS-dead zones (indoors, tunnels, urban canyons). I\'d also like to swap the single ultrasonic sensor for a small array — or a low-cost LiDAR — to get true left/right obstacle awareness, add bone-conduction audio cues for richer feedback without blocking the user\'s ears, and ship a polished mobile app with offline route caching so the cane works even when the phone briefly drops signal.',
-                tags:       ['Hackathon · 1st', 'Google Maps API', 'Servos', 'Ultrasonic', 'Bluetooth', 'Accessibility']
-            });
-
-            // ── Counter Timer Circuit ───────────────────────────────────────────
-            var ctModal = buildVideoModal({
-                video:      './Worthy%20Images/Counter%20Timer%20Circuit%20video.mp4',
-                statusIcon: 'fa-clock',
-                status:     'Complete · Combinational',
-                cat:        'Digital Logic',
-                title:      'Counter Timer Circuit',
-                body:       'A three-digit (<strong>000–999</strong>) counter / timer driven entirely by discrete logic — no microcontroller. The clock comes from a <strong>NAND-gate relaxation oscillator</strong> with a <strong>100 nF + 1 kΩ</strong> RC pair, running at ~3.5 kHz. Four switches drive it: <strong>UP</strong>, <strong>DOWN</strong>, <strong>RESET</strong>, and <strong>PAUSE</strong> (which gates the clock without losing state). Because the design is built on 4-bit hex counter blocks, a network of <strong>7 AND gates</strong> detects "10" and forces a load-zero plus a carry pulse to the next digit, skipping A–F cleanly. Two NPN BJTs sit between digits as small signal boosters so the carry pulses arrive crisp despite the dense routing.',
-                tags:       ['NAND Oscillator', 'AND Carry', 'NPN Boost', 'RC Clock', 'Hex Skip']
-            });
+            // ── Generic video card → reuse buildVideoModal, sourced from card DOM ─
+            function openVideoCard(card) {
+                if (!card._vmodal) {
+                    var txt = function (sel) { var e = card.querySelector(sel); return e ? e.textContent.trim() : ''; };
+                    var descEl = card.querySelector('.pcard__desc');
+                    var tags = [];
+                    card.querySelectorAll('.pcard__tag').forEach(function (t) { tags.push(t.textContent.trim()); });
+                    card._vmodal = buildVideoModal({
+                        video:      card.dataset.video,
+                        statusIcon: card.dataset.statusIcon || 'fa-play',
+                        status:     txt('.pcard__status'),
+                        cat:        txt('.pcard__cat'),
+                        title:      txt('.pcard__title'),
+                        body:       descEl ? descEl.innerHTML : '',
+                        tags:       tags
+                    });
+                }
+                card._vmodal.open();
+            }
 
             // ── CAD GALLERY · model-viewer modal ────────────────────────────────
             // One persistent overlay; the inner <model-viewer> is rebuilt fresh on
@@ -5100,10 +5076,7 @@ flex-direction: column;
                 card.addEventListener('click', function () {
                     if      (card.dataset.sc === '1') openSenseCube();
                     else if (card.dataset.tg === '1') openTelemetry();
-                    else if (card.dataset.im === '1') imModal.open();
-                    else if (card.dataset.fb === '1') fbModal.open();
-                    else if (card.dataset.ct === '1') ctModal.open();
-                    else if (card.dataset.cn === '1') cnModal.open();
+                    else if (card.dataset.video)      openVideoCard(card);
                     else if (card.dataset.cad)        openCadModal(card);
                     else                              openModal(card);
                 });
@@ -5116,11 +5089,11 @@ flex-direction: column;
                     closeModal();
                     closeSenseCube();
                     closeTelemetry();
-                    imModal.close();
-                    fbModal.close();
-                    ctModal.close();
-                    cnModal.close();
                     closeCadModal();
+                    document.querySelectorAll('.scinfo-overlay.open').forEach(function (ov) {
+                        ov.classList.remove('open');
+                        var vv = ov.querySelector('video'); if (vv) { try { vv.pause(); } catch (err) {} }
+                    });
                 }
             });
         })();
