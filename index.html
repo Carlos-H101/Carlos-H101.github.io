@@ -3592,7 +3592,7 @@ flex-direction: column;
          ║  (permanent brandmark) → glowing earth ring → slogan steps →        ║
          ║  ocean waves fade into the site. Everything editable from the       ║
          ║  admin panel: slogans are the <li>s below, timings/mode/accent are  ║
-         ║  data-* attributes on #ldr-root. Skip: button or Esc.               ║
+         ║  data-* attributes on #ldr-root. Esc ends the intro early.          ║
          ║  ?intro=1 forces a replay · ?intro=0 suppresses it.                 ║
          ╚══════════════════════════════════════════════════════════════════════╝ -->
     <div id="ldr-root" data-mode="session" data-draw="1800" data-shrink="900"
@@ -3638,19 +3638,32 @@ flex-direction: column;
                 transition:transform var(--ldrRing,.7s) cubic-bezier(.2,.7,.3,1),
                     opacity var(--ldrRing,.7s) ease;z-index:3;display:block}
             #ldr-root.ldr-ringed .ldr-ring{transform:translate(-50%,-50%) scale(1);opacity:1}
-            .ldr-earth{position:absolute;inset:7%;opacity:.9}
-            .ldr-earth .grat{fill:none;stroke:rgba(0,212,255,.35);stroke-width:1}
-            .ldr-earth .grat2{fill:none;stroke:rgba(255,255,255,.22);stroke-width:.8}
-            .ldr-earth .land{fill:rgba(0,212,255,.16);stroke:rgba(0,212,255,.55);
-                stroke-width:1;stroke-linejoin:round}
-            .ldr-earth .spin{transform-origin:50% 50%;animation:ldrSpin 70s linear infinite}
-            @keyframes ldrSpin{to{transform:rotate(360deg)}}
+            /* photoreal earth: NASA Blue Marble equirectangular texture scrolling
+               inside a circular mask, sold as a sphere by limb shading, a sun
+               highlight, a night-side terminator, and an atmosphere rim */
+            .ldr-earth{position:absolute;inset:7%;border-radius:50%;overflow:hidden;
+                background:#020714;
+                box-shadow:0 0 70px rgba(70,150,255,.35),0 0 26px rgba(120,200,255,.25)}
+            .ldr-earth-tex{position:absolute;top:0;bottom:0;left:0;width:400%;
+                background:url('./Worthy%20Images/earth-texture.jpg') repeat-x;
+                background-size:50% 100%;
+                filter:brightness(.92) saturate(1.18);
+                animation:ldrEarthSpin 64s linear infinite}
+            @keyframes ldrEarthSpin{to{transform:translateX(-50%)}}
+            .ldr-earth-shade{position:absolute;inset:0;border-radius:50%;
+                background:
+                    radial-gradient(circle at 32% 28%,rgba(255,255,255,.22),rgba(255,255,255,0) 44%),
+                    radial-gradient(circle at 50% 50%,rgba(0,0,0,0) 52%,rgba(1,3,12,.62) 96%),
+                    linear-gradient(105deg,rgba(0,0,0,0) 58%,rgba(1,3,14,.72) 96%)}
+            .ldr-earth-atmo{position:absolute;inset:0;border-radius:50%;
+                box-shadow:inset 0 0 26px 7px rgba(125,205,255,.38),
+                    inset 0 0 6px 1px rgba(200,235,255,.5)}
             /* ── slogan ── */
             .ldr-slogan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
                 width:min(80vw,560px);text-align:center;z-index:5;margin:0;
                 font-family:'Outfit',sans-serif;font-weight:800;text-transform:uppercase;
                 color:#f0f0f0;letter-spacing:.2em;font-size:clamp(1.1rem,3.4vw,2rem);
-                text-shadow:0 0 22px rgba(0,212,255,.5);opacity:0}
+                text-shadow:0 2px 18px rgba(1,4,12,.9),0 0 30px rgba(0,212,255,.45);opacity:0}
             .ldr-slogan.ldr-in{animation:ldrUp .45s ease forwards}
             .ldr-slogan.ldr-outup{animation:ldrGone .32s ease forwards}
             @keyframes ldrUp{from{opacity:0;transform:translate(-50%,-38%)}
@@ -3669,12 +3682,6 @@ flex-direction: column;
             @keyframes ldrW1{to{transform:translateX(-720px)}}
             @keyframes ldrW2{to{transform:translateX(-960px)}}
             @keyframes ldrW3{to{transform:translateX(-600px)}}
-            /* ── skip ── */
-            .ldr-skip{position:absolute;right:22px;bottom:20px;z-index:7;
-                background:transparent;border:1px solid rgba(0,212,255,.4);color:#8fe8f5;
-                font-family:'Share Tech Mono',ui-monospace,monospace;font-size:12px;
-                letter-spacing:.14em;padding:7px 14px;border-radius:999px;cursor:pointer}
-            .ldr-skip:hover{border-color:var(--ldrA);color:#fff}
             /* the docked brandmark is always fully inked — only the big intro
                logo animates its strokes */
             .ldr-brand .ldr-p{stroke-dashoffset:0;transition:none}
@@ -3733,29 +3740,11 @@ flex-direction: column;
                 <text class="ldr-mono" x="130" y="176" text-anchor="middle">CH</text>
             </svg>
             <span class="ldr-ring" id="ldrRing">
-                <svg class="ldr-earth" viewBox="0 0 240 240" aria-hidden="true">
-                    <defs><clipPath id="ldrGlobeClip"><circle cx="120" cy="120" r="99"/></clipPath></defs>
-                    <circle class="grat2" cx="120" cy="120" r="100"/>
-                    <g clip-path="url(#ldrGlobeClip)">
-                        <g class="spin">
-                            <ellipse class="grat" cx="120" cy="120" rx="33" ry="100"/>
-                            <ellipse class="grat" cx="120" cy="120" rx="66" ry="100"/>
-                            <ellipse class="grat" cx="120" cy="120" rx="99" ry="100"/>
-                            <path class="grat" d="M120 20 V220"/>
-                            <path class="land" d="M52 78 q14 -16 34 -12 q16 3 18 16 q2 12 -8 18
-                                q4 10 -2 22 q-8 16 -18 26 q-8 8 -12 -2 q-3 -10 -8 -16
-                                q-10 -12 -10 -26 q0 -16 6 -26 Z"/>
-                            <path class="land" d="M142 60 q22 -8 40 2 q14 8 12 22 q-2 12 -14 16
-                                q2 14 -6 24 q-10 12 -22 10 q-10 -2 -12 -14 q-2 -10 -6 -18
-                                q-6 -14 -2 -26 q3 -10 10 -16 Z"/>
-                            <path class="land" d="M158 168 q12 -8 24 -2 q10 5 8 14 q-2 8 -12 10
-                                q-12 2 -20 -4 q-8 -7 0 -18 Z"/>
-                        </g>
-                        <ellipse class="grat2" cx="120" cy="120" rx="100" ry="33"/>
-                        <ellipse class="grat2" cx="120" cy="120" rx="100" ry="66"/>
-                        <path class="grat" d="M20 120 H220" stroke-dasharray="3 6"/>
-                    </g>
-                </svg>
+                <span class="ldr-earth" aria-hidden="true">
+                    <span class="ldr-earth-tex"></span>
+                    <span class="ldr-earth-shade"></span>
+                    <span class="ldr-earth-atmo"></span>
+                </span>
             </span>
             <p class="ldr-slogan" id="ldrSlogan" aria-live="polite"></p>
             <span class="ldr-waves" aria-hidden="true">
@@ -3772,7 +3761,6 @@ flex-direction: column;
                         d="M0 240 q75 -50 150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0"/>
                 </svg>
             </span>
-            <button class="ldr-skip" id="ldrSkip" type="button">SKIP ▸</button>
         </div>
 
         <script>
@@ -3839,7 +3827,6 @@ flex-direction: column;
                     brand.classList.remove('ldr-boost');
                 }, 1200);
             }
-            document.getElementById('ldrSkip').addEventListener('click', finish);
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape') finish(); });
 
             /* timeline */
