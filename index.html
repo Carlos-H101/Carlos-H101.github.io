@@ -3606,11 +3606,13 @@ flex-direction: column;
                 display:flex;align-items:center;justify-content:center;overflow:hidden;
                 transition:opacity 1.1s ease}
             .ldr-overlay.ldr-out{opacity:0;pointer-events:none}
-            /* ── monogram strokes: faces draw then fill white; depth lines echo ── */
-            .ldr-p{fill:none;stroke:var(--ldrA);stroke-width:3;stroke-linecap:round;
+            /* ── monogram strokes: faces draw then fill white; depth lines echo.
+                 Every color/size below reads a --ldr* variable first so the
+                 admin "Loading Phase" section can retheme without new CSS ── */
+            .ldr-p{fill:none;stroke:var(--ldrLStroke,var(--ldrA));stroke-width:3;stroke-linecap:round;
                 stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
             .ldr-d{stroke-width:1.5;opacity:.38}
-            .ldr-f{fill:#f0f0f0;fill-opacity:0}
+            .ldr-f{fill:var(--ldrLFill,#f0f0f0);fill-opacity:0}
             #ldr-root.ldr-drawn .ldr-p{stroke-dashoffset:0;
                 transition:stroke-dashoffset var(--ldrDraw,1.8s) ease-in-out}
             #ldr-root.ldr-inked .ldr-f{fill-opacity:1;
@@ -3622,14 +3624,17 @@ flex-direction: column;
             /* ── big center logo (FLIP source) ── */
             .ldr-logo{position:fixed;left:50%;top:50%;width:min(56vw,380px);
                 transform:translate(-50%,-50%);
-                filter:drop-shadow(0 0 18px rgba(0,212,255,.35));
+                filter:drop-shadow(0 0 calc(18px*var(--ldrLGlow,1)) var(--ldrLGlowC,rgba(0,212,255,.35)));
                 transition:transform var(--ldrShrink,.9s) cubic-bezier(.6,.05,.25,1),opacity .3s;
                 z-index:6;will-change:transform}
-            /* ── persistent top-center brandmark ── */
+            /* ── persistent top-center brandmark (width scales with the admin's
+                 logo-size percentage; the FLIP dock measures it, so the shrink
+                 animation lands wherever this ends up) ── */
             .ldr-brand{position:fixed;top:8px;left:50%;transform:translateX(-50%);
-                z-index:1500;display:block;width:58px;opacity:0;pointer-events:none;
+                z-index:1500;display:block;width:calc(58px*var(--ldrLScale,1));
+                opacity:0;pointer-events:none;
                 transition:opacity .5s ease;
-                filter:drop-shadow(0 0 8px rgba(0,212,255,.45))}
+                filter:drop-shadow(0 0 calc(8px*var(--ldrLGlow,1)) var(--ldrLGlowC,rgba(0,212,255,.45)))}
             .ldr-brand.ldr-on{opacity:1;pointer-events:auto}
             /* while the intro overlay is up, the docked mark must float above it;
                once the intro ends it drops back below the site's own modals */
@@ -3642,18 +3647,21 @@ flex-direction: column;
             /* ── glowing ring, dot-map globe, viewport signal lines ── */
             .ldr-ring{position:absolute;left:50%;top:50%;width:min(64vmin,460px);
                 aspect-ratio:1;transform:translate(-50%,-50%) scale(.55);opacity:0;
-                border-radius:9999px;border:1px solid rgba(255,255,255,.55);
-                box-shadow:0 0 34px 4px rgba(255,255,255,.18),0 0 90px 16px rgba(0,212,255,.16),
-                    inset 0 0 40px rgba(255,255,255,.07);
+                border-radius:9999px;border:1px solid var(--ldrRingC,rgba(255,255,255,.55));
+                box-shadow:0 0 calc(34px*var(--ldrGS,1)) calc(4px*var(--ldrGS,1)) var(--ldrRG1,rgba(255,255,255,.18)),
+                    0 0 calc(90px*var(--ldrGS,1)) calc(16px*var(--ldrGS,1)) var(--ldrRG2,rgba(0,212,255,.16)),
+                    inset 0 0 calc(40px*var(--ldrGS,1)) var(--ldrRG3,rgba(255,255,255,.07));
                 transition:transform var(--ldrRing,.7s) cubic-bezier(.2,.7,.3,1),
                     opacity var(--ldrRing,.7s) ease;z-index:3;display:block}
             #ldr-root.ldr-ringed .ldr-ring{transform:translate(-50%,-50%) scale(1);opacity:1}
             .ldr-ring.ldr-pulse{animation:ldrPulse 3.2s ease-in-out infinite alternate}
             @keyframes ldrPulse{
-                from{box-shadow:0 0 26px 2px rgba(255,255,255,.13),0 0 70px 10px rgba(0,212,255,.11),
-                    inset 0 0 32px rgba(255,255,255,.05)}
-                to{box-shadow:0 0 42px 7px rgba(255,255,255,.24),0 0 115px 24px rgba(0,212,255,.22),
-                    inset 0 0 48px rgba(255,255,255,.1)}}
+                from{box-shadow:0 0 calc(26px*var(--ldrGS,1)) calc(2px*var(--ldrGS,1)) var(--ldrRG1,rgba(255,255,255,.13)),
+                    0 0 calc(70px*var(--ldrGS,1)) calc(10px*var(--ldrGS,1)) var(--ldrRG2,rgba(0,212,255,.11)),
+                    inset 0 0 calc(32px*var(--ldrGS,1)) var(--ldrRG3,rgba(255,255,255,.05))}
+                to{box-shadow:0 0 calc(42px*var(--ldrGS,1)) calc(7px*var(--ldrGS,1)) var(--ldrRG1,rgba(255,255,255,.24)),
+                    0 0 calc(115px*var(--ldrGS,1)) calc(24px*var(--ldrGS,1)) var(--ldrRG2,rgba(0,212,255,.22)),
+                    inset 0 0 calc(48px*var(--ldrGS,1)) var(--ldrRG3,rgba(255,255,255,.1))}}
             /* canvases are replaced elements: insets alone don't size them,
                so width/height must be explicit or the box collapses to the
                bitmap's intrinsic 300×150 */
@@ -3664,8 +3672,9 @@ flex-direction: column;
             /* ── slogan ── */
             .ldr-slogan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
                 width:min(80vw,560px);text-align:center;z-index:5;margin:0;
-                font-family:'Outfit',sans-serif;font-weight:800;text-transform:uppercase;
-                color:#f0f0f0;letter-spacing:.2em;font-size:clamp(1.1rem,3.4vw,2rem);
+                font-family:var(--ldrSFont,'Outfit',sans-serif);font-weight:800;text-transform:uppercase;
+                color:var(--ldrSColor,#f0f0f0);letter-spacing:.2em;
+                font-size:var(--ldrSSize,clamp(1.1rem,3.4vw,2rem));
                 text-shadow:0 2px 18px rgba(1,4,12,.9),0 0 30px rgba(0,212,255,.45);opacity:0}
             .ldr-slogan.ldr-in{animation:ldrUp .45s ease forwards}
             .ldr-slogan.ldr-outup{animation:ldrGone .32s ease forwards}
@@ -3675,13 +3684,17 @@ flex-direction: column;
                 to{opacity:0;transform:translate(-50%,-66%)}}
             /* ── ocean waves ── */
             .ldr-waves{position:absolute;left:0;right:0;bottom:0;height:30vh;z-index:2;
-                opacity:0;transition:opacity 1.4s ease;display:block}
+                opacity:0;transition:opacity 1.4s ease;display:block;
+                filter:drop-shadow(0 0 7px var(--ldrWGlowC,transparent))}
             #ldr-root.ldr-final .ldr-waves{opacity:1}
             .ldr-wave{position:absolute;bottom:0;left:0;height:100%;width:200%}
             .ldr-wave path{fill:none;stroke-linecap:round}
-            .ldr-w1{animation:ldrW1 16s linear infinite}
-            .ldr-w2{animation:ldrW2 26s linear infinite;opacity:.6}
-            .ldr-w3{animation:ldrW3 11s linear infinite;opacity:.8}
+            .ldr-w1{animation:ldrW1 calc(16s/var(--ldrWSpd,1)) linear infinite}
+            .ldr-w2{animation:ldrW2 calc(26s/var(--ldrWSpd,1)) linear infinite;opacity:.6}
+            .ldr-w3{animation:ldrW3 calc(11s/var(--ldrWSpd,1)) linear infinite;opacity:.8}
+            .ldr-w1 path{stroke:var(--ldrW1,rgba(0,212,255,.5))}
+            .ldr-w2 path{stroke:var(--ldrW2,rgba(0,212,255,.32))}
+            .ldr-w3 path{stroke:var(--ldrW3,rgba(143,232,245,.38))}
             @keyframes ldrW1{to{transform:translateX(-720px)}}
             @keyframes ldrW2{to{transform:translateX(-960px)}}
             @keyframes ldrW3{to{transform:translateX(-600px)}}
@@ -3741,15 +3754,15 @@ flex-direction: column;
             <p class="ldr-slogan" id="ldrSlogan" aria-live="polite"></p>
             <span class="ldr-waves" aria-hidden="true">
                 <svg class="ldr-wave ldr-w1" viewBox="0 0 2880 320" preserveAspectRatio="none">
-                    <path stroke="rgba(0,212,255,.5)" stroke-width="2.5"
+                    <path stroke-width="2.5"
                         d="M0 160 q90 -70 180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0 t180 0"/>
                 </svg>
                 <svg class="ldr-wave ldr-w2" viewBox="0 0 2880 320" preserveAspectRatio="none">
-                    <path stroke="rgba(0,212,255,.32)" stroke-width="2"
+                    <path stroke-width="2"
                         d="M0 200 q120 -90 240 0 t240 0 t240 0 t240 0 t240 0 t240 0 t240 0 t240 0 t240 0 t240 0 t240 0 t240 0"/>
                 </svg>
                 <svg class="ldr-wave ldr-w3" viewBox="0 0 2880 320" preserveAspectRatio="none">
-                    <path stroke="rgba(143,232,245,.38)" stroke-width="1.6"
+                    <path stroke-width="1.6"
                         d="M0 240 q75 -50 150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0 t150 0"/>
                 </svg>
             </span>
@@ -3781,6 +3794,38 @@ flex-direction: column;
             var rotate = D.rotate !== '0', lines = D.lines !== '0';
             var glowP  = D.glow   !== '0', waves = D.waves !== '0';
 
+            /* ── theme: every attr is optional; absent = the CSS defaults,
+                 so an untouched page renders exactly as designed ─────────── */
+            function hx(c) { var m = /^#?([0-9a-f]{6})$/i.exec((c || '').trim());
+                if (!m) return null; var n = parseInt(m[1], 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+            function rgba(c, a) { var r = hx(c);
+                return r ? 'rgba(' + r[0] + ',' + r[1] + ',' + r[2] + ',' + a + ')' : c; }
+            var V = root.style;
+            if (D.logoFill)      V.setProperty('--ldrLFill',  D.logoFill);
+            if (D.logoStroke)    V.setProperty('--ldrLStroke',D.logoStroke);
+            if (D.logoScale)     V.setProperty('--ldrLScale', (+D.logoScale  || 100) / 100);
+            if (D.logoGlow)      V.setProperty('--ldrLGlow',  (+D.logoGlow   || 0)   / 100);
+            if (D.logoGlowColor) V.setProperty('--ldrLGlowC', D.logoGlowColor);
+            if (D.sloganFont)    V.setProperty('--ldrSFont',  D.sloganFont);
+            if (D.sloganSize)    V.setProperty('--ldrSSize',  D.sloganSize);
+            if (D.sloganColor)   V.setProperty('--ldrSColor', D.sloganColor);
+            if (D.waveGlowColor) V.setProperty('--ldrWGlowC', D.waveGlowColor);
+            if (D.waveSpeed)     V.setProperty('--ldrWSpd',   (+D.waveSpeed  || 100) / 100);
+            var gs = D.glowStrength ? (+D.glowStrength || 0) / 100 : 1;
+            if (gs !== 1) V.setProperty('--ldrGS', gs);
+            if (D.ringColor) {
+                V.setProperty('--ldrRingC', rgba(D.ringColor, .75));
+                V.setProperty('--ldrRG1',   rgba(D.ringColor, .3));
+                V.setProperty('--ldrRG2',   rgba(D.ringColor, .18));
+                V.setProperty('--ldrRG3',   rgba(D.ringColor, .08));
+            }
+            if (D.waveColor) {
+                V.setProperty('--ldrW1', rgba(D.waveColor, .5));
+                V.setProperty('--ldrW2', rgba(D.waveColor, .32));
+                V.setProperty('--ldrW3', rgba(D.waveColor, .38));
+            }
+
             /* custom uploaded logo replaces the built-in vector monogram;
                a raster can't stroke-draw, so it fades in over the draw time */
             if (D.logo) {
@@ -3805,9 +3850,19 @@ flex-direction: column;
             var logo   = document.getElementById('ldrLogo');
             var slogan = document.getElementById('ldrSlogan');
             var ringEl = document.getElementById('ldrRing');
+            /* each step (and the final phrase) may carry its own font/size/
+               color via data-* on the <li> — per-word styling from the admin */
             var steps  = [].map.call(root.querySelectorAll('#ldrSteps li'),
-                function (li) { return li.textContent.trim(); }).filter(Boolean);
+                function (li) { return { t: li.textContent.trim(),
+                    f: li.dataset.font || '', s: li.dataset.size || '',
+                    c: li.dataset.color || '' }; })
+                .filter(function (o) { return o.t; });
             var finalEl= document.getElementById('ldrFinal');
+            function styleSlogan(o) {
+                slogan.style.fontFamily = o.f;
+                slogan.style.fontSize   = o.s;
+                slogan.style.color      = o.c;
+            }
             var tDraw  = +D.draw   || 1800, tShrink = +D.shrink || 900;
             var tRing  = +D.ring   || 700,  tStep   = +D.step   || 1400;
             var tHold  = +D.hold   || 2600;
@@ -3868,6 +3923,9 @@ flex-direction: column;
             var fCtx = fCan && fCan.getContext('2d');
             var dpr  = Math.min(window.devicePixelRatio || 1, 2), raf = 0;
             var accent = D.accent || '#00d4ff';
+            var dotC    = D.dotColor || '#cfeffd';
+            var dotBack = D.dotColor || accent;
+            var lineRGB = hx(D.lineColor) || [0, 212, 255];
             function sizeCanvases() {
                 if (gCan) { gCan.width = gCan.clientWidth * dpr; gCan.height = gCan.clientHeight * dpr; }
                 if (fCan) { fCan.width = fCan.clientWidth * dpr; fCan.height = fCan.clientHeight * dpr; }
@@ -3884,26 +3942,33 @@ flex-direction: column;
                     gCtx.clearRect(0, 0, w, h);
                     var th = rotate ? ts * .00012 : .55;
                     var cos = Math.cos(th), sin = Math.sin(th);
-                    gCtx.shadowColor = accent;
-                    for (var i = 0; i < dots.length; i++) {
-                        var p = dots[i];
-                        var X = p.x * cos + p.z * sin, Z = p.z * cos - p.x * sin;
-                        var sx = cx + X * R, sy = cy - p.y * R;
-                        if (Z > 0) {
-                            gCtx.shadowBlur = 7 * pulse * dpr;
-                            gCtx.globalAlpha = (.35 + .6 * Z) * pulse;
-                            gCtx.fillStyle = '#cfeffd';
-                            gCtx.beginPath();
-                            gCtx.arc(sx, sy, (1 + Z * 1.1) * dpr, 0, 6.2832);
-                            gCtx.fill();
-                        } else {
-                            gCtx.shadowBlur = 0;
-                            gCtx.globalAlpha = .07;
-                            gCtx.fillStyle = accent;
-                            gCtx.beginPath();
-                            gCtx.arc(sx, sy, dpr, 0, 6.2832);
-                            gCtx.fill();
-                        }
+                    /* two passes so canvas shadow state is set once per frame,
+                       not per dot — shadowBlur churn is the slow path */
+                    var i, p, X, Z;
+                    gCtx.shadowBlur = 0;
+                    gCtx.globalAlpha = .07;
+                    gCtx.fillStyle = dotBack;
+                    for (i = 0; i < dots.length; i++) {
+                        p = dots[i];
+                        X = p.x * cos + p.z * sin; Z = p.z * cos - p.x * sin;
+                        if (Z > 0) continue;
+                        gCtx.beginPath();
+                        gCtx.arc(cx + X * R, cy - p.y * R, dpr, 0, 6.2832);
+                        gCtx.fill();
+                    }
+                    gCtx.shadowColor = dotBack;
+                    /* cap the glow multiplier's effect on blur — huge blurs melt
+                       software renderers; the pulse still breathes via alpha */
+                    gCtx.shadowBlur = 7 * pulse * Math.min(gs, 1.4) * dpr;
+                    gCtx.fillStyle = dotC;
+                    for (i = 0; i < dots.length; i++) {
+                        p = dots[i];
+                        X = p.x * cos + p.z * sin; Z = p.z * cos - p.x * sin;
+                        if (Z <= 0) continue;
+                        gCtx.globalAlpha = (.35 + .6 * Z) * pulse;
+                        gCtx.beginPath();
+                        gCtx.arc(cx + X * R, cy - p.y * R, (1 + Z * 1.1) * dpr, 0, 6.2832);
+                        gCtx.fill();
                     }
                     gCtx.globalAlpha = 1; gCtx.shadowBlur = 0;
                 }
@@ -3930,7 +3995,8 @@ flex-direction: column;
                             }
                             if (x === 0) fCtx.moveTo(x, y); else fCtx.lineTo(x, y);
                         }
-                        fCtx.strokeStyle = 'rgba(0,212,255,' + (.09 + .05 * (L % 3)) + ')';
+                        fCtx.strokeStyle = 'rgba(' + lineRGB[0] + ',' + lineRGB[1] + ',' +
+                            lineRGB[2] + ',' + (.09 + .05 * (L % 3)) + ')';
                         fCtx.lineWidth = dpr;
                         fCtx.stroke();
                     }
@@ -3977,9 +4043,10 @@ flex-direction: column;
             t += tShrink + 150;
             at(t, function () { root.classList.add('ldr-ringed'); });      /* phase 3 */
             t += tRing;
-            steps.forEach(function (txt) {                                 /* phase 4 */
+            steps.forEach(function (o) {                                   /* phase 4 */
                 at(t, function () {
-                    slogan.textContent = txt;
+                    slogan.textContent = o.t;
+                    styleSlogan(o);
                     slogan.classList.remove('ldr-outup');
                     /* restart the entrance animation */
                     void slogan.offsetWidth;
@@ -3994,6 +4061,9 @@ flex-direction: column;
             at(t, function () {                                            /* phase 5 */
                 root.classList.add('ldr-final');
                 slogan.textContent = (finalEl && finalEl.textContent.trim()) || '';
+                styleSlogan(finalEl ? { f: finalEl.dataset.font || '',
+                    s: finalEl.dataset.size || '', c: finalEl.dataset.color || '' }
+                    : { f: '', s: '', c: '' });
                 slogan.classList.remove('ldr-outup');
                 void slogan.offsetWidth;
                 slogan.classList.add('ldr-in');
