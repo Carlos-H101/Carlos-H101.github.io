@@ -192,7 +192,7 @@
             display: inline-flex;
             align-items: center;
             gap: .7rem;
-            cursor: pointer;
+            cursor: default;
             font-family: 'SF Pro Display', -apple-system, 'Inter', sans-serif;
             color: var(--txt);
             text-decoration: none;
@@ -3670,8 +3670,11 @@ flex-direction: column;
                 z-index:2;opacity:0;transition:opacity 1s ease}
             #ldr-root.ldr-ringed .ldr-flow{opacity:1}
             /* ── slogan ── */
+            /* the slogan box spans the whole viewport (not just the globe) so
+               admin font sizes can stretch phrases edge to edge */
             .ldr-slogan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-                width:min(80vw,560px);text-align:center;z-index:5;margin:0;
+                width:96vw;text-align:var(--ldrSAlign,center);z-index:5;margin:0;
+                overflow-wrap:break-word;
                 font-family:var(--ldrSFont,'Outfit',sans-serif);font-weight:800;text-transform:uppercase;
                 color:var(--ldrSColor,#f0f0f0);letter-spacing:.2em;
                 font-size:var(--ldrSSize,clamp(1.1rem,3.4vw,2rem));
@@ -3810,6 +3813,7 @@ flex-direction: column;
             if (D.sloganFont)    V.setProperty('--ldrSFont',  D.sloganFont);
             if (D.sloganSize)    V.setProperty('--ldrSSize',  D.sloganSize);
             if (D.sloganColor)   V.setProperty('--ldrSColor', D.sloganColor);
+            if (D.sloganAlign)   V.setProperty('--ldrSAlign', D.sloganAlign);
             if (D.waveGlowColor) V.setProperty('--ldrWGlowC', D.waveGlowColor);
             if (D.waveSpeed)     V.setProperty('--ldrWSpd',   (+D.waveSpeed  || 100) / 100);
             var gs = D.glowStrength ? (+D.glowStrength || 0) / 100 : 1;
@@ -4086,7 +4090,7 @@ flex-direction: column;
     <!-- ╔══════════════════════════════════════════════════════════════════════╗
          ║  NAVIGATION  ──  logo (Car‑los wordmark) + menu + hamburger          ║
          ╚══════════════════════════════════════════════════════════════════════╝ -->
-    <nav class="nav" id="nav"><a class="nav-logo" onclick="oG();return false;" href="#" aria-label="Carlos Hernandez — open intro">
+    <nav class="nav" id="nav"><a class="nav-logo" aria-label="Carlos Hernandez">
             <div class="nav-logo-mark">
                 <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <circle class="ring" cx="16" cy="16" r="14"/>
@@ -4101,11 +4105,6 @@ flex-direction: column;
                 <span class="nav-logo-surname">Hernandez</span>
                 <span class="nav-logo-tag">Electrical · Embedded</span>
             </div>
-            <span class="nav-logo-cta" aria-hidden="true">
-                <i class="fas fa-arrow-left nav-cta-arrow"></i>
-                <span class="cta-text">Tap my name</span>
-                <span class="dot"></span>
-            </span>
         </a>
         <ul class="nl" id="nl">
             <li><a href="#about" onclick="cm();cG();sA();">About</a></li>
