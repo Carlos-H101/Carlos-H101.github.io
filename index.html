@@ -3663,7 +3663,8 @@ flex-direction: column;
             /* canvases are replaced elements: insets alone don't size them,
                so width/height must be explicit or the box collapses to the
                bitmap's intrinsic 300×150 */
-            .ldr-globe{position:absolute;left:5%;top:5%;width:90%;height:90%;border-radius:50%}
+            /* canvas fills the ring so the dot sphere can reach its edge */
+            .ldr-globe{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:50%}
             .ldr-flow{position:absolute;left:0;top:0;width:100%;height:100%;
                 z-index:2;opacity:0;transition:opacity 1s ease}
             #ldr-root.ldr-ringed .ldr-flow{opacity:1}
@@ -3933,7 +3934,9 @@ flex-direction: column;
                 var pulse = glowP ? (.72 + .28 * Math.sin(ts * .0016)) : 1;
                 if (gCtx) {
                     var w = gCan.width, h = gCan.height;
-                    var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 * .92;
+                    /* .97: dots hug the ring, with just enough margin that the
+                       limb dots and their glow don't clip at the canvas edge */
+                    var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 * .97;
                     gCtx.clearRect(0, 0, w, h);
                     var th = rotate ? ts * .00012 : .55;
                     var cos = Math.cos(th), sin = Math.sin(th);
