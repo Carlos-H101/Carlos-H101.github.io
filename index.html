@@ -3671,13 +3671,25 @@ flex-direction: column;
             /* ── slogan ── */
             /* the slogan box spans the whole viewport (not just the globe) so
                admin font sizes can stretch phrases edge to edge */
+            /* admin sizes are capped at 13vw so a 220px desktop headline
+               auto-fits phones instead of shattering into a letter column */
             .ldr-slogan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
                 width:96vw;text-align:var(--ldrSAlign,center);z-index:5;margin:0;
                 overflow-wrap:break-word;
                 font-family:var(--ldrSFont,'Outfit',sans-serif);font-weight:800;text-transform:uppercase;
                 color:var(--ldrSColor,#f0f0f0);letter-spacing:.2em;
-                font-size:var(--ldrSSize,clamp(1.1rem,3.4vw,2rem));
+                font-size:min(var(--ldrSSize,clamp(1.1rem,3.4vw,2rem)),13vw);
                 text-shadow:0 2px 18px rgba(1,4,12,.9),0 0 30px rgba(0,212,255,.45);opacity:0}
+            /* ── intro breakpoints: tablet ≤768px · phones ≤480px ── */
+            @media (max-width:768px){
+                .ldr-slogan{letter-spacing:.12em}
+                .ldr-waves{height:24vh}
+            }
+            @media (max-width:480px){
+                .ldr-brand{width:calc(44px*var(--ldrLScale,1));top:6px}
+                .ldr-logo{width:min(64vw,320px)}
+                .ldr-slogan{letter-spacing:.08em}
+            }
             .ldr-slogan.ldr-in{animation:ldrUp .45s ease forwards}
             .ldr-slogan.ldr-outup{animation:ldrGone .32s ease forwards}
             @keyframes ldrUp{from{opacity:0;transform:translate(-50%,-38%)}
@@ -3856,7 +3868,9 @@ flex-direction: column;
             var finalEl= document.getElementById('ldrFinal');
             function styleSlogan(o) {
                 slogan.style.fontFamily = o.f;
-                slogan.style.fontSize   = o.s;
+                /* same 13vw cap as the stylesheet — inline sizes would
+                   otherwise bypass it and overflow phones */
+                slogan.style.fontSize   = o.s ? 'min(' + o.s + ', 13vw)' : '';
                 slogan.style.color      = o.c;
             }
             var tDraw  = +D.draw   || 1800, tShrink = +D.shrink || 900;
@@ -3922,7 +3936,9 @@ flex-direction: column;
             var dotC    = D.dotColor || '#cfeffd';
             var dotBack = D.dotColor || accent;
             var lineRGB = hx(D.lineColor) || [0, 212, 255];
+            var mob = false;   /* phones get a lighter renderer */
             function sizeCanvases() {
+                mob = window.innerWidth < 560;
                 if (gCan) { gCan.width = gCan.clientWidth * dpr; gCan.height = gCan.clientHeight * dpr; }
                 if (fCan) { fCan.width = fCan.clientWidth * dpr; fCan.height = fCan.clientHeight * dpr; }
             }
@@ -3943,21 +3959,23 @@ flex-direction: column;
                     /* two passes so canvas shadow state is set once per frame,
                        not per dot — shadowBlur churn is the slow path */
                     var i, p, X, Z;
-                    gCtx.shadowBlur = 0;
-                    gCtx.globalAlpha = .07;
-                    gCtx.fillStyle = dotBack;
-                    for (i = 0; i < dots.length; i++) {
-                        p = dots[i];
-                        X = p.x * cos + p.z * sin; Z = p.z * cos - p.x * sin;
-                        if (Z > 0) continue;
-                        gCtx.beginPath();
-                        gCtx.arc(cx + X * R, cy - p.y * R, dpr, 0, 6.2832);
-                        gCtx.fill();
+                    if (!mob) {   /* back hemisphere is a subtlety phones can skip */
+                        gCtx.shadowBlur = 0;
+                        gCtx.globalAlpha = .07;
+                        gCtx.fillStyle = dotBack;
+                        for (i = 0; i < dots.length; i++) {
+                            p = dots[i];
+                            X = p.x * cos + p.z * sin; Z = p.z * cos - p.x * sin;
+                            if (Z > 0) continue;
+                            gCtx.beginPath();
+                            gCtx.arc(cx + X * R, cy - p.y * R, dpr, 0, 6.2832);
+                            gCtx.fill();
+                        }
                     }
                     gCtx.shadowColor = dotBack;
                     /* cap the glow multiplier's effect on blur — huge blurs melt
                        software renderers; the pulse still breathes via alpha */
-                    gCtx.shadowBlur = 7 * pulse * Math.min(gs, 1.4) * dpr;
+                    gCtx.shadowBlur = 7 * pulse * Math.min(gs, 1.4) * dpr * (mob ? .6 : 1);
                     gCtx.fillStyle = dotC;
                     for (i = 0; i < dots.length; i++) {
                         p = dots[i];
@@ -3977,13 +3995,14 @@ flex-direction: column;
                     var gx = (rr.left + rr.width / 2) * dpr;
                     var gy = (rr.top + rr.height / 2) * dpr;
                     var gr = rr.width / 2 * dpr * 1.18;
-                    for (var L = 0; L < 6; L++) {
-                        var y0  = fh * (.16 + .68 * L / 5);
+                    var nLines = mob ? 4 : 6, stepX = (mob ? 14 : 8) * dpr;
+                    for (var L = 0; L < nLines; L++) {
+                        var y0  = fh * (.16 + .68 * L / (nLines - 1));
                         var amp = fh * .018 * (1 + (L % 3));
                         var spd = .00022 + (L % 3) * .00009;
                         var k   = .006 + (L % 3) * .0022;
                         fCtx.beginPath();
-                        for (var x = 0; x <= fw; x += 8 * dpr) {
+                        for (var x = 0; x <= fw; x += stepX) {
                             var y = y0 + amp * Math.sin((x / dpr) * k + ts * spd + L * 1.7);
                             var dx = x - gx, dy = y - gy;
                             var dist = Math.sqrt(dx * dx + dy * dy);
