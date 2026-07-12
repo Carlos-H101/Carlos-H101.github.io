@@ -3741,7 +3741,7 @@ flex-direction: column;
             <li data-size="140px">Inspires</li>
             <li data-size="140px">Change</li>
         </ul>
-        <span id="ldrFinal" hidden="">Work that Inspires Change</span>
+        <span id="ldrFinal" hidden="">Work that|Inspires Change</span>
 
         <div class="ldr-overlay" id="ldrOverlay">
             <svg class="ldr-logo" id="ldrLogo" viewBox="0 0 540 410">
@@ -3873,6 +3873,43 @@ flex-direction: column;
                 slogan.style.fontSize   = o.s ? 'min(' + o.s + ', 13vw)' : '';
                 slogan.style.color      = o.c;
             }
+            /* "|" in a slogan forces a line break ("Work that|Inspires
+               Change" → two lines) — editable from the admin panel */
+            function setSloganText(txt) {
+                slogan.textContent = '';
+                var parts = String(txt).split('|');
+                for (var i = 0; i < parts.length; i++) {
+                    if (i) slogan.appendChild(document.createElement('br'));
+                    slogan.appendChild(document.createTextNode(parts[i].trim()));
+                }
+                slogan._parts = parts;
+            }
+            /* shrink the font just enough that the widest intended line fits
+               on ONE line — otherwise big admin sizes re-wrap a two-line
+               phrase back into a stack of words */
+            function fitSlogan() {
+                var box = slogan.getBoundingClientRect().width;
+                if (!box || !slogan._parts) return;
+                var cs = getComputedStyle(slogan);
+                var size = parseFloat(cs.fontSize);
+                var meas = document.createElement('span');
+                meas.style.cssText = 'position:absolute;left:-99999px;top:0;' +
+                    'visibility:hidden;white-space:nowrap';
+                meas.style.fontFamily    = cs.fontFamily;
+                meas.style.fontWeight    = cs.fontWeight;
+                meas.style.textTransform = cs.textTransform;
+                meas.style.letterSpacing = cs.letterSpacing;
+                meas.style.fontSize      = size + 'px';
+                document.body.appendChild(meas);
+                var widest = 0;
+                for (var i = 0; i < slogan._parts.length; i++) {
+                    meas.textContent = slogan._parts[i].trim();
+                    if (meas.offsetWidth > widest) widest = meas.offsetWidth;
+                }
+                meas.remove();
+                if (widest > box * .98)
+                    slogan.style.fontSize = (size * box * .98 / widest) + 'px';
+            }
             var tDraw  = +D.draw   || 1800, tShrink = +D.shrink || 900;
             var tRing  = +D.ring   || 700,  tStep   = +D.step   || 1400;
             var tHold  = +D.hold   || 2600;
@@ -3916,22 +3953,29 @@ flex-direction: column;
             ];
             var dots = [];
             (function () {
+                /* each land cell is supersampled 2×2 with a little jitter:
+                   4× the dots of the raw mask, so the continents read as
+                   defined shapes instead of a sparse suggestion */
                 var d2r = Math.PI / 180;
                 for (var r = 0; r < MAP.length; r++)
                     for (var c = 0; c < 48; c++)
-                        if (MAP[r].charAt(c) === '#') {
-                            var lat = (90 - (r + .5) * 7.5) * d2r;
-                            var lon = (-180 + (c + .5) * 7.5) * d2r;
-                            dots.push({ x: Math.cos(lat) * Math.cos(lon),
-                                        y: Math.sin(lat),
-                                        z: Math.cos(lat) * Math.sin(lon) });
-                        }
+                        if (MAP[r].charAt(c) === '#')
+                            for (var sr = 0; sr < 2; sr++)
+                                for (var sc = 0; sc < 2; sc++) {
+                                    var jl = (Math.random() - .5) * 1.2;
+                                    var jo = (Math.random() - .5) * 1.2;
+                                    var lat = (90 - (r + .25 + sr * .5) * 7.5 + jl) * d2r;
+                                    var lon = (-180 + (c + .25 + sc * .5) * 7.5 + jo) * d2r;
+                                    dots.push({ x: Math.cos(lat) * Math.cos(lon),
+                                                y: Math.sin(lat),
+                                                z: Math.cos(lat) * Math.sin(lon) });
+                                }
             })();
             var gCan = document.getElementById('ldrGlobe');
             var fCan = document.getElementById('ldrFlow');
             var gCtx = gCan && gCan.getContext('2d');
             var fCtx = fCan && fCan.getContext('2d');
-            var dpr  = Math.min(window.devicePixelRatio || 1, 2), raf = 0;
+            var dpr  = Math.min(window.devicePixelRatio || 1, 2), raf = 0, ringT0 = 0;
             var accent = D.accent || '#00d4ff';
             var dotC    = D.dotColor || '#cfeffd';
             var dotBack = D.dotColor || accent;
@@ -3954,21 +3998,27 @@ flex-direction: column;
                        limb dots and their glow don't clip at the canvas edge */
                     var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 * .97;
                     gCtx.clearRect(0, 0, w, h);
-                    var th = rotate ? ts * .00012 : .55;
+                    /* North America faces forward the moment the ring appears
+                       (θ0 centers lon ≈ −100°); from there the globe spins so
+                       features drift left→right, like the real Earth. Screen x
+                       is cx − X·R: with x = cos(λ−θ) that puts east on the
+                       right — the +X form drew the world mirrored. */
+                    if (!ringT0 && root.classList.contains('ldr-ringed')) ringT0 = ts;
+                    var th = 2.9671 - (rotate && ringT0 ? (ts - ringT0) * .00012 : 0);
                     var cos = Math.cos(th), sin = Math.sin(th);
                     /* two passes so canvas shadow state is set once per frame,
                        not per dot — shadowBlur churn is the slow path */
                     var i, p, X, Z;
                     if (!mob) {   /* back hemisphere is a subtlety phones can skip */
                         gCtx.shadowBlur = 0;
-                        gCtx.globalAlpha = .07;
+                        gCtx.globalAlpha = .06;
                         gCtx.fillStyle = dotBack;
                         for (i = 0; i < dots.length; i++) {
                             p = dots[i];
                             X = p.x * cos + p.z * sin; Z = p.z * cos - p.x * sin;
                             if (Z > 0) continue;
                             gCtx.beginPath();
-                            gCtx.arc(cx + X * R, cy - p.y * R, dpr, 0, 6.2832);
+                            gCtx.arc(cx - X * R, cy - p.y * R, .8 * dpr, 0, 6.2832);
                             gCtx.fill();
                         }
                     }
@@ -3977,13 +4027,15 @@ flex-direction: column;
                        software renderers; the pulse still breathes via alpha */
                     gCtx.shadowBlur = 7 * pulse * Math.min(gs, 1.4) * dpr * (mob ? .6 : 1);
                     gCtx.fillStyle = dotC;
-                    for (i = 0; i < dots.length; i++) {
+                    /* phones draw every other dot — with the denser map that
+                       still reads as continents at a phone's globe size */
+                    for (i = 0; i < dots.length; i += (mob ? 2 : 1)) {
                         p = dots[i];
                         X = p.x * cos + p.z * sin; Z = p.z * cos - p.x * sin;
                         if (Z <= 0) continue;
                         gCtx.globalAlpha = (.35 + .6 * Z) * pulse;
                         gCtx.beginPath();
-                        gCtx.arc(cx + X * R, cy - p.y * R, (1 + Z * 1.1) * dpr, 0, 6.2832);
+                        gCtx.arc(cx - X * R, cy - p.y * R, (.75 + Z * .85) * dpr, 0, 6.2832);
                         gCtx.fill();
                     }
                     gCtx.globalAlpha = 1; gCtx.shadowBlur = 0;
@@ -4062,8 +4114,9 @@ flex-direction: column;
             t += tRing;
             steps.forEach(function (o) {                                   /* phase 4 */
                 at(t, function () {
-                    slogan.textContent = o.t;
+                    setSloganText(o.t);
                     styleSlogan(o);
+                    fitSlogan();
                     slogan.classList.remove('ldr-outup');
                     /* restart the entrance animation */
                     void slogan.offsetWidth;
@@ -4077,10 +4130,11 @@ flex-direction: column;
             });
             at(t, function () {                                            /* phase 5 */
                 root.classList.add('ldr-final');
-                slogan.textContent = (finalEl && finalEl.textContent.trim()) || '';
+                setSloganText((finalEl && finalEl.textContent.trim()) || '');
                 styleSlogan(finalEl ? { f: finalEl.dataset.font || '',
                     s: finalEl.dataset.size || '', c: finalEl.dataset.color || '' }
                     : { f: '', s: '', c: '' });
+                fitSlogan();
                 slogan.classList.remove('ldr-outup');
                 void slogan.offsetWidth;
                 slogan.classList.add('ldr-in');
