@@ -2358,9 +2358,11 @@ justify-content: center;
 
         /* ───── §10.6 · Mobile-safe layout & image handling ───────────────── */
         @media (max-width: 720px) {
-            /* Honeycomb must not overflow the viewport on narrow screens. */
+            /* Honeycomb must not overflow the viewport on narrow screens.
+               24vw × 3.5 columns ≈ 84vw + gaps: the offset row's half-hex
+               overhang fits without any cell shrinking. */
             .hex-grid {
-                --hex-w: min(28vw, 150px);
+                --hex-w: min(24vw, 150px);
                 --lift: 50px;
                 width: 100% !important;
                 max-width: 100%;
@@ -3014,13 +3016,14 @@ flex-direction: column;
         .hex-grid {
             --hex-w: 280px;
             --hex-h: calc(var(--hex-w) * 1.1547);
-            --col-gap: 4px;
+            --col-gap: 2px;
             --row-step: calc(var(--hex-h) * -0.255);
             --shift: calc((var(--hex-w) + var(--col-gap)) / 2);
             --lift: 130px;
-            /* Width fits a 3-hex row (top); the offset 2-hex row (shifted by half a
-               hex) sits perfectly centered underneath it. */
-            width: calc(3 * var(--hex-w) + 2 * var(--col-gap));
+            /* Width fits the full hive footprint: a 3-hex top row PLUS the
+               half-hex overhang of the offset bottom row. Sized any narrower,
+               flex shrinks the bottom cells and the tessellation falls apart. */
+            width: calc(3.5 * var(--hex-w) + 2.5 * var(--col-gap));
             margin: 0 auto;
             padding: calc(0.6rem + var(--lift)) 0 calc(0.6rem + var(--lift))
         }
@@ -3036,6 +3039,9 @@ flex-direction: column;
         .hex-cell {
             --hex-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             width: var(--hex-w);
+            /* never let flex shrink a cell — every hex in the hive stays the
+               same size even if a row runs wider than the container */
+            flex: 0 0 var(--hex-w);
             aspect-ratio: 1 / 1.1547;
             position: relative;
             cursor: pointer
