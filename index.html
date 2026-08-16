@@ -3032,6 +3032,12 @@ flex-direction: column;
             margin-left: var(--shift);
             margin-top: var(--row-step)
         }
+        /* Tail row: a single hex nested dead-center under the offset pair —
+           the tip of the hive. A full-cell shift centers it in the 3-wide
+           grid; !important outranks the mobile offset override. */
+        .hex-row.hex-row--tail {
+            margin-left: calc(var(--hex-w) + var(--col-gap)) !important
+        }
         /* Container — both hex layers live inside this single interactive parent */
         .hex-cell {
             --hex-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -4806,9 +4812,12 @@ flex-direction: column;
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
                 </div>
+            </div>
+            <div class="hex-row offset hex-row--tail">
                 <div class="hex-cell"
-                     style="--hex-img: url('./Worthy%20Images/p21-pitch-challenge.webp'); --dock-color: #0E4A52"
-                     data-img="./Worthy%20Images/p21-pitch-challenge.webp"
+                     style="--hex-img: url('./Worthy%20Images/p21-pitch-portrait.webp'); --dock-color: #0E4A52"
+                     data-img="./Worthy%20Images/p21-pitch-portrait.webp"
+                     data-img-pos="center 25%"
                      data-place="2nd Place — $1,000 · Student Track"
                      data-cat="Pitch Competition"
                      data-title="P21 VMS Pitch Challenge"
