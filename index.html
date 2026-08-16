@@ -3032,12 +3032,6 @@ flex-direction: column;
             margin-left: var(--shift);
             margin-top: var(--row-step)
         }
-        /* Tail row: a single hex nested dead-center under the offset pair —
-           the tip of the hive. A full-cell shift centers it in the 3-wide
-           grid; !important outranks the mobile offset override. */
-        .hex-row.hex-row--tail {
-            margin-left: calc(var(--hex-w) + var(--col-gap)) !important
-        }
         /* Container — both hex layers live inside this single interactive parent */
         .hex-cell {
             --hex-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -3350,6 +3344,20 @@ flex-direction: column;
             color: var(--acc2);
             padding: 0 .25rem;
             border-radius: 3px
+        }
+        /* Outbound event link inside an award popup (paragraphs or facts) */
+        .awinfo-link {
+            display: inline-block;
+            color: var(--acc2, #00d4ff);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 212, 255, .45);
+            padding-bottom: 1px;
+            transition: color .2s ease, border-color .2s ease
+        }
+        .awinfo-link:hover {
+            color: #ffffff;
+            border-bottom-color: #ffffff
         }
         .awinfo-facts {
             display: grid;
@@ -4812,8 +4820,6 @@ flex-direction: column;
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
                 </div>
-            </div>
-            <div class="hex-row offset hex-row--tail">
                 <div class="hex-cell"
                      style="--hex-img: url('./Worthy%20Images/p21-pitch-portrait.webp'); --dock-color: #0E4A52"
                      data-img="./Worthy%20Images/p21-pitch-portrait.webp"
@@ -5775,7 +5781,8 @@ flex-direction: column;
                         "The <strong>4th Annual P21 VMS Pitch Challenge</strong> is Pioneers 21's flagship showcase for the region's founders — <mark>20+ startups</mark> pitching live to a panel of investors and industry judges, with <strong>$20,000+ in non-dilutive pre-seed funding</strong> on the line.",
                         "Getting to the stage was a program, not a signup. Over <strong>five Pitch Prep Sessions</strong>, participating ventures were coached on <mark>intellectual property</mark>, <mark>market analysis</mark>, <mark>pitch development</mark>, and <mark>investor readiness</mark> — and in the practice rounds, more than <strong>20 mentors</strong> from industry, entrepreneurship, and technology leadership tore into every deck live, sharpening both the delivery and the business strategy behind it.",
                         "Pitched <em>The Sense Cube</em> — the wireless handheld device that translates real-time smartphone messages into tactile Braille through six high-precision solenoid pins, keeping accessibility off-screen and in the hand.",
-                        "Closed the day with <strong>2nd place in the Student Track</strong> and a $1,000 award — and a room full of investors, mentors, and fellow founders who now know what The Sense Cube is."
+                        "Closed the day with <strong>2nd place in the Student Track</strong> and a $1,000 award — and a room full of investors, mentors, and fellow founders who now know what The Sense Cube is.",
+                        "<a class=\"awinfo-link\" href=\"https://pioneers21.org/vms-pitch-challenge\" target=\"_blank\" rel=\"noopener\">Learn more about the P21 VMS Pitch Challenge at pioneers21.org →</a>"
                     ],
                     facts: [
                         ['Result',  '2nd Place · Student Track · $1,000'],
@@ -5785,7 +5792,8 @@ flex-direction: column;
                         ['Date',    'May 30, 2026'],
                         ['Project', 'The Sense Cube'],
                         ['Prep',    '5 pitch-prep sessions · 20+ mentors'],
-                        ['Field',   'Embedded Systems · Accessibility']
+                        ['Field',   'Embedded Systems · Accessibility'],
+                        ['Event Site', '<a class="awinfo-link" href="https://pioneers21.org/vms-pitch-challenge" target="_blank" rel="noopener">pioneers21.org/vms-pitch-challenge</a>']
                     ]
                 }
             };
