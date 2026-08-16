@@ -4829,7 +4829,8 @@ flex-direction: column;
                 <div class="hex-cell"
                      style="--hex-img: url('./Worthy%20Images/p21-pitch-portrait.webp'); --dock-color: #0E4A52"
                      data-img="./Worthy%20Images/p21-pitch-portrait.webp"
-                     data-img-pos="center 25%"
+                     data-hero="./Worthy%20Images/p21-pitch-challenge.webp"
+                     data-hero-pos="center 32%"
                      data-place="2nd Place — $1,000 · Student Track"
                      data-cat="Pitch Competition"
                      data-title="P21 VMS Pitch Challenge"
@@ -5088,7 +5089,7 @@ flex-direction: column;
         })();
 
         var nav = document.getElementById("nav");
-        window.addEventListener("scroll", function () { nav.classList.toggle("scrolled", window.scrollY > 50); });
+        window.addEventListener("scroll", function () { nav.classList.toggle("scrolled", window.scrollY > 50); }, { passive: true });
         var hb = document.getElementById("hb"); var nl = document.getElementById("nl");
         hb.addEventListener("click", function () { hb.classList.toggle("active"); nl.classList.toggle("open"); });
         function cm() { hb.classList.remove("active"); nl.classList.remove("open"); }
@@ -5834,7 +5835,9 @@ flex-direction: column;
             var scrollEl  = overlay.querySelector('.awinfo-scroll');
 
             function openAward(cell) {
-                var img   = cell.dataset.img   || '';
+                /* data-hero lets a cell show one photo on the hex and a
+                   different one in the popup's top banner */
+                var img   = cell.dataset.hero || cell.dataset.img || '';
                 var place = cell.dataset.place || '';
                 var cat   = cell.dataset.cat   || '';
                 var title = cell.dataset.title || '';
@@ -5850,7 +5853,7 @@ flex-direction: column;
                 subEl.textContent   = sub;
                 overlay.style.setProperty('--awinfo-color', dock.trim());
                 // Optional per-cell crop anchor (e.g. data-img-pos="center top").
-                overlay.style.setProperty('--hero-pos', cell.dataset.imgPos || 'center');
+                overlay.style.setProperty('--hero-pos', cell.dataset.heroPos || cell.dataset.imgPos || 'center');
 
                 // Rich paragraphs + facts grid (fall back to short desc if no detail entry)
                 parasEl.innerHTML = '';
