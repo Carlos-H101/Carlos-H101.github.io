@@ -4806,6 +4806,23 @@ flex-direction: column;
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
                 </div>
+                <div class="hex-cell"
+                     style="--hex-img: url('./Worthy%20Images/p21-pitch-challenge.webp'); --dock-color: #0E4A52"
+                     data-img="./Worthy%20Images/p21-pitch-challenge.webp"
+                     data-place="2nd Place — $1,000 · Student Track"
+                     data-cat="Pitch Competition"
+                     data-title="P21 VMS Pitch Challenge"
+                     data-sub="Tomás Rivera Conference Center · UTEP · May 2026"
+                     data-desc="The 4th Annual P21 VMS Pitch Challenge put 20+ startups on stage in front of investors and industry judges, with $20,000+ in non-dilutive funding on the line. Pitched The Sense Cube after five Pitch Prep Sessions covering intellectual property, market analysis, pitch development, and investor readiness — with live feedback from 20+ mentors along the way. Took 2nd place in the Student Track and a $1,000 award.">
+                    <div class="hex-dock">
+                        <div class="hex-dock-content">
+                            <span class="title">P21 Pitch Challenge</span>
+                            <span class="desc">2nd · $1,000</span>
+                        </div>
+                    </div>
+                    <div class="hex-top"></div>
+                    <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                </div>
             </div>
         </div>
     </section>
@@ -5170,9 +5187,10 @@ flex-direction: column;
         var scCur = 0;
         var scSlides = document.querySelectorAll(".sc-img-wrap");
         var scDts = document.querySelectorAll(".sc-dot");
-        function scGo(n) { scSlides[scCur].classList.remove("active"); scDts[scCur].classList.remove("active"); scCur = ((n % scSlides.length) + scSlides.length) % scSlides.length; scSlides[scCur].classList.add("active"); scDts[scCur].classList.add("active"); }
+        function scGo(n) { if (!scSlides.length) return; scSlides[scCur].classList.remove("active"); if (scDts[scCur]) scDts[scCur].classList.remove("active"); scCur = ((n % scSlides.length) + scSlides.length) % scSlides.length; scSlides[scCur].classList.add("active"); if (scDts[scCur]) scDts[scCur].classList.add("active"); }
         function scSlide(d) { scGo(scCur + d); }
-        setInterval(function () { scSlide(1); }, 5000);
+        // legacy slider markup may not exist — never run the interval against nothing
+        if (scSlides.length) setInterval(function () { scSlide(1); }, 5000);
 
         // ─── §9 · Skills marquee — pure CSS animation (see .marquee-track) ──
         // The old JS marquee ran a requestAnimationFrame loop at 60fps for the
@@ -5741,6 +5759,24 @@ flex-direction: column;
                         ['Date',   '2025'],
                         ['Domain', 'Supply Chain Optimization'],
                         ['Team',   'Isaac Torres · Aden Ramirez · Luis Cruz Garfio · Carlos Hernandez']
+                    ]
+                },
+                'P21 VMS Pitch Challenge': {
+                    paras: [
+                        "The <strong>4th Annual P21 VMS Pitch Challenge</strong> is Pioneers 21's flagship showcase for the region's founders — <mark>20+ startups</mark> pitching live to a panel of investors and industry judges, with <strong>$20,000+ in non-dilutive pre-seed funding</strong> on the line.",
+                        "Getting to the stage was a program, not a signup. Over <strong>five Pitch Prep Sessions</strong>, participating ventures were coached on <mark>intellectual property</mark>, <mark>market analysis</mark>, <mark>pitch development</mark>, and <mark>investor readiness</mark> — and in the practice rounds, more than <strong>20 mentors</strong> from industry, entrepreneurship, and technology leadership tore into every deck live, sharpening both the delivery and the business strategy behind it.",
+                        "Pitched <em>The Sense Cube</em> — the wireless handheld device that translates real-time smartphone messages into tactile Braille through six high-precision solenoid pins, keeping accessibility off-screen and in the hand.",
+                        "Closed the day with <strong>2nd place in the Student Track</strong> and a $1,000 award — and a room full of investors, mentors, and fellow founders who now know what The Sense Cube is."
+                    ],
+                    facts: [
+                        ['Result',  '2nd Place · Student Track · $1,000'],
+                        ['Event',   '4th Annual P21 VMS Pitch Challenge'],
+                        ['Host',    'Pioneers 21 — Venture Mentoring Service'],
+                        ['Venue',   'Tomás Rivera Conference Center · UTEP'],
+                        ['Date',    'May 30, 2026'],
+                        ['Project', 'The Sense Cube'],
+                        ['Prep',    '5 pitch-prep sessions · 20+ mentors'],
+                        ['Field',   'Embedded Systems · Accessibility']
                     ]
                 }
             };
