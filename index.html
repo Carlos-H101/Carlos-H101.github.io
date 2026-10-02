@@ -902,6 +902,90 @@
             padding-top: clamp(1.25rem, 2.5vw, 2.25rem) !important
         }
 
+        /* ── Résumé download — same panel language as the Skills cards
+             (bg2 fill, faint cyan hairline, corner brackets) ── */
+        .resume {
+            padding-top: clamp(1.25rem, 2.5vw, 2.25rem) !important;
+            padding-bottom: clamp(1.25rem, 2.5vw, 2.25rem) !important
+        }
+        .resume-card {
+            display: grid;
+            grid-template-columns: minmax(150px, 220px) 1fr;
+            gap: clamp(1.4rem, 3vw, 2.6rem);
+            align-items: center;
+            max-width: 860px;
+            background: var(--bg2);
+            border: 1px solid var(--acc5);
+            padding: clamp(1.4rem, 3vw, 2.2rem);
+            position: relative
+        }
+        .resume-card::before,
+        .resume-card::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px
+        }
+        .resume-card::before { top: 0; left: 0; border-top: 1.5px solid var(--acc3); border-left: 1.5px solid var(--acc3) }
+        .resume-card::after { bottom: 0; right: 0; border-bottom: 1.5px solid var(--acc3); border-right: 1.5px solid var(--acc3) }
+        .resume-preview {
+            display: block;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .06);
+            transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease
+        }
+        .resume-preview img { display: block; width: 100%; height: auto }
+        .resume-preview:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 44px rgba(0, 0, 0, .6), 0 0 0 1px var(--acc4)
+        }
+        .resume-kicker {
+            font-family: var(--fs);
+            font-size: .72rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--acc);
+            margin: 0 0 .7rem
+        }
+        .resume-kicker i { margin-right: .4rem }
+        .resume-title {
+            font-family: var(--fb);
+            font-size: clamp(1.3rem, 2.6vw, 1.75rem);
+            font-weight: 700;
+            color: var(--txt);
+            margin: 0 0 .35rem
+        }
+        .resume-role { color: var(--txt2); margin: 0 0 .3rem; font-size: .98rem }
+        .resume-meta { color: var(--txt3); margin: 0 0 1.4rem; font-family: var(--fs); font-size: .78rem; letter-spacing: .06em }
+        .resume-actions { display: flex; flex-wrap: wrap; gap: .75rem }
+        .resume-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            min-height: 46px;
+            padding: .75rem 1.3rem;
+            border: 1px solid var(--acc4);
+            border-radius: 999px;
+            color: var(--acc2);
+            font-family: var(--fs);
+            font-size: .8rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: background .25s ease, color .25s ease, border-color .25s ease
+        }
+        .resume-btn:hover { background: var(--acc6); border-color: var(--acc) }
+        .resume-btn--primary { background: var(--acc); border-color: var(--acc); color: #04141a; font-weight: 700 }
+        .resume-btn--primary:hover { background: var(--acc2); color: #04141a }
+        @media (max-width: 640px) {
+            .resume-card { grid-template-columns: 1fr; text-align: center }
+            .resume-preview { width: min(62%, 240px); margin: 0 auto }
+            .resume-actions { flex-direction: column }
+            .resume-btn { width: 100% }
+        }
+
         .sc-feat {
             background: var(--bg2);
             border: 1px solid var(--acc5);
@@ -4208,6 +4292,7 @@ flex-direction: column;
             <li><a href="#competitions" onclick="cm();cG();">Awards</a></li>
             <li><a href="#experience" onclick="cm();cG();">Experience</a></li>
             <li><a href="#skills" onclick="cm();cG();">Skills</a></li>
+            <li><a href="#resume" onclick="cm();cG();">Resume</a></li>
             <li><a href="#contact" onclick="cm();cG();">Contact</a></li>
         </ul><button class="hb" id="hb" aria-label="Menu"><span></span><span></span><span></span></button>
     </nav>
@@ -4313,7 +4398,7 @@ flex-direction: column;
                         <h3 class="pcard__title">Braille Cell Evaluation Board</h3>
                     </div>
                     <div class="pcard__bottom">
-                        <p class="pcard__desc">My custom evaluation board for the Sense Cube's Braille cells, built to answer one question before anything else got designed: do my cells actually fire? The board hosts <strong>eight Braille cell sockets</strong> along the bottom edge, driven as a matrix. <strong>TBD62783 source drivers</strong> push current into the selected pin while <strong>TD62083 Darlington sinks</strong> pull the return, and three <strong>74HC238 decoders</strong> (module select and pin control) pick exactly which cell and which of its six dots is active. The matrix collapses <strong>48 solenoid pins</strong> down to a handful of Arduino lines: jumper the board to Arduino power, step through every dot on every cell, and watch which ones actuate. Schematic, custom cell socket footprints, layout, and routing all done in <strong>KiCad</strong>.</p>
+                        <p class="pcard__desc">My custom evaluation board for the Sense Cube's Braille cells, built to answer one question before anything else got designed: do my cells actually fire? The board hosts <strong>eight Braille cell sockets</strong> along the bottom edge, driven as a matrix. <strong>TBD62783 source drivers</strong> push current into the selected pin while <strong>TD62083 Darlington sinks</strong> pull the return, and four <strong>74HC238 decoders</strong> (module select and pin control) pick exactly which cell and which of its six dots is active. The matrix collapses <strong>48 solenoid pins</strong> down to a handful of Arduino lines: jumper the board to Arduino power, step through every dot on every cell, and watch which ones actuate. Schematic, custom cell socket footprints, layout, and routing all done in <strong>KiCad</strong>.</p>
                         <div class="pcard__tags">
                             <span class="pcard__tag">KiCad</span>
                             <span class="pcard__tag">Matrix Driving</span>
@@ -4340,6 +4425,27 @@ flex-direction: column;
                             <span class="pcard__tag">Bridge Rectifier</span>
                             <span class="pcard__tag">Power Electronics</span>
                             <span class="pcard__tag">PCB Layout</span>
+                        </div>
+                    </div>
+                </div>
+            </div><div class="pcard pcard--cad tilt" data-cad="braillecell" data-glb="./CAD%20Projects/Braille%20Cell%20PCB.glb" data-poster="./CAD%20Projects/Braille%20Cell%20PCB.webp">
+                <div class="pcard__hint"><span class="dot"></span>Click to spin in 3D</div>
+                <img class="pcard__poster" src="./CAD%20Projects/Braille%20Cell%20PCB.webp" alt="Braille cell PCB layout" loading="lazy">
+                <div class="pcard__scrim"></div>
+                <span class="pcard__status"><i class="fas fa-cube" style="margin-right:.35rem"></i>View in 3D</span>
+                <div class="pcard__content">
+                    <div class="pcard__top">
+                        <div class="pcard__cat">KiCad · PCB Design · Sense Cube</div>
+                        <h3 class="pcard__title">Braille Cell PCB</h3>
+                    </div>
+                    <div class="pcard__bottom">
+                        <p class="pcard__desc">The board inside every Braille cell of the Sense Cube. It mounts under the 3D printed solenoid carrier (the Braille V3 cell in my CAD gallery), with six holes laid out in the standard <strong>2×3 Braille dot pattern</strong> so each solenoid sits right over the dot it drives. Each solenoid's two leads land on a pair of plated holes beside its dot. The A side of all six solenoids routes to the <strong>2×3 header</strong> at one end of the board, and the B side routes to the matching header at the other end, which gives every cell a clean source side and sink side. That split is what lets the cell plug straight into my <strong>evaluation board</strong>, where the source drivers feed one header and the Darlington sinks pull the other, so any single dot can fire on its own. Two layers, 7.6 × 29.7 mm, 12 nets, fully routed in <strong>KiCad</strong>.</p>
+                        <div class="pcard__tags">
+                            <span class="pcard__tag">KiCad</span>
+                            <span class="pcard__tag">2-Layer PCB</span>
+                            <span class="pcard__tag">Solenoid Drive</span>
+                            <span class="pcard__tag">Braille</span>
+                            <span class="pcard__tag">Accessibility</span>
                         </div>
                     </div>
                 </div>
@@ -4973,6 +5079,34 @@ flex-direction: column;
                 <div class="skv2-chips">
                     <span class="skv2-chip">Bluetooth / Wireless Comms</span>
                     <span class="skv2-chip">Data Acquisition Systems</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════════════════════════════╗
+         ║  §05b · RESUME  ──  preview + one-click PDF download for recruiters  ║
+         ║  Every .resume-pdf link points at the same file; the admin panel     ║
+         ║  swaps them together when a new PDF is uploaded.                     ║
+         ╚══════════════════════════════════════════════════════════════════════╝ -->
+    <section class="resume" id="resume">
+        <div class="sh rv">
+            <p class="sr"><span class="n">06</span> // RESUME</p>
+            <h2 class="st">Resume</h2>
+            <div class="sl"></div>
+        </div>
+        <div class="resume-card rv">
+            <a class="resume-preview resume-pdf" href="./resume/Carlos_Gael_Hernandez_Castro_Resume.pdf" target="_blank" rel="noopener" aria-label="Open my resume (PDF) in a new tab">
+                <img src="./resume/resume-preview.webp" alt="Preview of Carlos Gael Hernandez Castro's one-page resume" width="640" height="828" loading="lazy">
+            </a>
+            <div class="resume-info">
+                <p class="resume-kicker"><i class="fas fa-file-pdf"></i>PDF · 1 page</p>
+                <h3 class="resume-title">Carlos Gael Hernandez Castro</h3>
+                <p class="resume-role">B.S. Electrical Engineering · Minor in Finance · UTEP</p>
+                <p class="resume-meta">Updated July 2026</p>
+                <div class="resume-actions">
+                    <a class="resume-btn resume-btn--primary resume-pdf" href="./resume/Carlos_Gael_Hernandez_Castro_Resume.pdf" download="Carlos_Gael_Hernandez_Castro_Resume.pdf"><i class="fas fa-download"></i>Download Resume</a>
+                    <a class="resume-btn resume-pdf" href="./resume/Carlos_Gael_Hernandez_Castro_Resume.pdf" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i>View in Browser</a>
                 </div>
             </div>
         </div>
