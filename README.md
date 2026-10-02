@@ -2,7 +2,7 @@
 
 Personal portfolio site. Single-page HTML/CSS/JS, hosted via GitHub Pages.
 
-**Live:** https://carlos-h101.github.io
+**Live:** https://carloshcastro.com
 
 ## Structure
 
