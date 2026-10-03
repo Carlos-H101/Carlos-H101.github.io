@@ -3124,6 +3124,11 @@ flex-direction: column;
             margin-left: var(--shift);
             margin-top: var(--row-step)
         }
+        /* rows alternate plain / offset; any plain row after an offset row
+           tucks up the same way so a 3rd+ row keeps the tessellation */
+        .hex-row.offset + .hex-row {
+            margin-top: var(--row-step)
+        }
         /* Container — both hex layers live inside this single interactive parent */
         .hex-cell {
             --hex-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -4449,7 +4454,7 @@ flex-direction: column;
                         </div>
                     </div>
                 </div>
-            </div><div class="pcard tilt tg-card" data-tg="1">
+            </div><div class="pcard tilt tg-card" data-video="./Worthy%20Images/Rocket%20Video.mp4" data-status-icon="fa-rocket">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__fallback"><i class="fas fa-satellite-dish"></i></div>
                 <div class="pcard__bg" style="background-image:url('./Worthy%20Images/telemetry-ground-station.webp')"></div>
@@ -4470,7 +4475,13 @@ flex-direction: column;
                         </div>
                     </div>
                 </div>
-            </div><div class="pcard tilt sc-card" data-sc="1">
+                <template class="pcard__popup">
+                    <span class="pcard__status">Active · Flight-Tested</span>
+                    <div class="pcard__cat">Aerospace · Embedded DAQ</div>
+                    <p class="pcard__desc">A real-time flight-data system built for the <strong>Sun City Rocket Team</strong>. The ground station decodes live telemetry from the rocket's onboard DAQ — pressure transducers, K-type thermocouples, accelerometers — and renders the data as it streams down so engineers can react in flight, not after recovery. The project carried the team through <strong>2nd place at IREC 2025</strong> and <strong>1st place at Lone Star Cup 2025</strong>, where reliable telemetry was the difference between a guess and a known apogee.</p>
+                    <div class="pcard__tags"><span class="pcard__tag">Arduino Mega</span><span class="pcard__tag">Telemetry</span><span class="pcard__tag">4-20 mA Loop</span><span class="pcard__tag">Thermocouples</span><span class="pcard__tag">DAQ</span></div>
+                </template>
+            </div><div class="pcard tilt sc-card" data-video="./Worthy%20Images/sense%20cube%20video.mp4" data-status-icon="fa-trophy">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__bg" style="background-image:url('./Worthy%20Images/sense-cube-photo.webp')"></div>
                 <div class="pcard__scrim"></div>
@@ -4490,6 +4501,12 @@ flex-direction: column;
                         </div>
                     </div>
                 </div>
+                <template class="pcard__popup">
+                    <span class="pcard__status">1st · $4K Won</span>
+                    <div class="pcard__cat">Embedded Systems · Accessibility</div>
+                    <p class="pcard__desc">Wireless handheld device translating real-time smartphone messages into tactile Braille via six high-precision solenoid pins. Bluetooth-paired to the user's phone, the Cube fires its solenoids in Braille patterns the user reads by touch — keeping accessibility off-screen and in the hand. Won 1st place at Miner Pitch ($3K) and 1st at Pioneers 21 ($1K), plus 2nd at Miner Tank.</p>
+                    <div class="pcard__tags"><span class="pcard__tag">Arduino</span><span class="pcard__tag">Bluetooth</span><span class="pcard__tag">Solenoids</span><span class="pcard__tag">3D Printing</span><span class="pcard__tag">Accessibility</span></div>
+                </template>
             </div><div class="pcard tilt cn-card" data-video="./Worthy%20Images/Smart%20Navigation%20Cane.mp4" data-status-icon="fa-trophy">
                 <div class="pcard__hint"><span class="dot"></span>Tap to view</div>
                 <div class="pcard__fallback"><i class="fas fa-lightbulb"></i></div>
@@ -4886,6 +4903,21 @@ flex-direction: column;
                     </div>
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                    <template class="hex-story">
+                        <p><strong>1st place at BorderHack '26.</strong> Built <em>Wayve</em> in a single day — a smart cane for visually impaired people that doesn't need an app store, doesn't need a sighted friend, and doesn't need you to learn anything new to use it.</p>
+                        <p><strong>Arduino R4 WiFi</strong> running the hardware. A <strong>mobile web app written from scratch</strong> running the software. The user speaks a destination, <mark>Gemini</mark> handles the voice, <mark>Google Maps</mark> plots the route, and the cane's <mark>servo motors</mark> physically signal which way to turn while sensors catch what's in front of you.</p>
+                        <p>Hardware and software in parallel, built to talk to each other in real time, and working by pitch day. Thanks to <em>GDSC UTEP</em> and <em>DropDev</em> for organizing these sorts of events — and to teammates <strong>Luis Juarez</strong>, <strong>Mauricio Prieto</strong>, and <strong>Imanol Galván</strong>. Three people I'd build with again tomorrow.</p>
+                        <p>First win. Not the last.</p>
+                        <div class="awinfo-fact"><span class="k">Result</span><span class="v">1st Place — BorderHack ’26</span></div>
+                        <div class="awinfo-fact"><span class="k">Event</span><span class="v">BorderHack ’26</span></div>
+                        <div class="awinfo-fact"><span class="k">Hosts</span><span class="v">GDSC UTEP × DropDev</span></div>
+                        <div class="awinfo-fact"><span class="k">Venue</span><span class="v">Texas Western Hall · UTEP</span></div>
+                        <div class="awinfo-fact"><span class="k">Date</span><span class="v">April 2026</span></div>
+                        <div class="awinfo-fact"><span class="k">Build Time</span><span class="v">Under 24 hours</span></div>
+                        <div class="awinfo-fact"><span class="k">Hardware</span><span class="v">Arduino R4 WiFi · Servos · Sensors</span></div>
+                        <div class="awinfo-fact"><span class="k">Software</span><span class="v">Mobile web app · Gemini voice · Google Maps API</span></div>
+                        <div class="awinfo-fact"><span class="k">Team</span><span class="v">Luis Juarez · Mauricio Prieto · Imanol Galván · Carlos Hernandez</span></div>
+                    </template>
                 </div>
                 <div class="hex-cell"
                      style="--hex-img: url('./Worthy%20Images/miners-pitch.webp'); --dock-color: #6B1226"
@@ -4903,6 +4935,18 @@ flex-direction: column;
                     </div>
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                    <template class="hex-story">
+                        <p><strong>Selected from over 60 applications</strong> to pitch <em>The Sense Cube</em> on the main stage at the Mike Loya Center, the heart of UTEP's entrepreneurship programs.</p>
+                        <p>The Sense Cube is a wireless handheld device that translates real-time smartphone messages into <mark>tactile Braille</mark> via six high-precision solenoid pins. The Cube pairs to the user's phone over Bluetooth, intercepts incoming messages, and fires the solenoids in Braille patterns the user reads by touch — keeping accessibility off-screen and in the hand.</p>
+                        <p>The competition was three rounds: a written application, a semifinal pitch with a working prototype, and a final on-stage pitch in front of investors and faculty. After advancing through every elimination round, the project took <strong>1st place</strong> against a strong UTEP cohort.</p>
+                        <p>The $3,000 prize is funding the next push: <mark>higher-precision solenoids</mark>, a refined Bluetooth stack, and a smaller, denser PCB respin that brings the whole device closer to a shippable form factor.</p>
+                        <div class="awinfo-fact"><span class="k">Result</span><span class="v">1st Place · $3,000 Prize</span></div>
+                        <div class="awinfo-fact"><span class="k">Venue</span><span class="v">Mike Loya Academic Services Building</span></div>
+                        <div class="awinfo-fact"><span class="k">Host</span><span class="v">UTEP — Miner Excellence Programs</span></div>
+                        <div class="awinfo-fact"><span class="k">Date</span><span class="v">November 2025</span></div>
+                        <div class="awinfo-fact"><span class="k">Project</span><span class="v">The Sense Cube</span></div>
+                        <div class="awinfo-fact"><span class="k">Field</span><span class="v">Embedded Systems · Accessibility</span></div>
+                    </template>
                 </div>
                 <div class="hex-cell"
                      style="--hex-img: url('./Worthy%20Images/pioneers-21.webp'); --dock-color: #1B2A4E"
@@ -4921,6 +4965,18 @@ flex-direction: column;
                     </div>
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                    <template class="hex-story">
+                        <p>Pioneers 21's holiday mixer brought together the strongest emerging ventures across the <strong>El Paso – Las Cruces corridor</strong>, hosted by <em>Microsoft</em> and <em>Nusenda Credit Union</em>.</p>
+                        <p>Pitching <em>The Sense Cube</em> alongside ventures including <mark>Wealthy</mark>, <mark>NG Leg Bot</mark>, <mark>Signology LLC</mark>, and <mark>BrightSteps</mark>, the project closed the night in <strong>1st place</strong> — a $1,000 award and an invitation to continue conversations with the host program.</p>
+                        <p>The pitch leaned into what makes The Sense Cube unique in the accessibility hardware space: a <strong>self-contained Braille translation device</strong> that doesn't depend on a phone in the user's hand. It's designed to be carried like a thick deck of cards — messages arrive as physical pin patterns the user can read by touch, anywhere, anytime.</p>
+                        <p>The room was a mix of investors, founders, and engineers, and the Q&amp;A pushed on go-to-market and unit economics — both areas the team has been actively iterating on with the prize funding.</p>
+                        <div class="awinfo-fact"><span class="k">Result</span><span class="v">1st Place · $2,000 Prize</span></div>
+                        <div class="awinfo-fact"><span class="k">Event</span><span class="v">Tacos &amp; Tech-ila Holiday Mixer</span></div>
+                        <div class="awinfo-fact"><span class="k">Hosts</span><span class="v">Microsoft &amp; Nusenda Credit Union</span></div>
+                        <div class="awinfo-fact"><span class="k">Date</span><span class="v">December 2025</span></div>
+                        <div class="awinfo-fact"><span class="k">Region</span><span class="v">El Paso – Las Cruces</span></div>
+                        <div class="awinfo-fact"><span class="k">Cohort</span><span class="v">Pioneers 21</span></div>
+                    </template>
                 </div>
             </div>
             <div class="hex-row offset">
@@ -4940,6 +4996,18 @@ flex-direction: column;
                     </div>
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                    <template class="hex-story">
+                        <p>Miner Tank is UTEP's flagship <strong>Shark-Tank-style competition</strong>. Pitched <em>The Sense Cube</em> in front of a panel of investors, faculty, and industry mentors at Texas Western Hall — and made it the <strong>first bilingual pitch in the event's history</strong>.</p>
+                        <p>When a judge asked a question whose answer mattered most to the people the device is for — Spanish-speaking communities along the U.S./Mexico border — the rest of the pitch was answered <mark>entirely in Spanish</mark>. It let the social impact of accessible Braille hardware land without flattening through translation, and framed the product the way it should be framed: built for the people who need it.</p>
+                        <p>The judges awarded the project <strong>2nd place overall</strong> and called out the bilingual delivery as a defining moment of the night.</p>
+                        <p>Beyond the result, Miner Tank was a forcing function: condensing a year of hardware iteration into eight minutes of investor-grade narrative, on a stage that takes itself seriously.</p>
+                        <div class="awinfo-fact"><span class="k">Result</span><span class="v">2nd Place · Bilingual Distinction</span></div>
+                        <div class="awinfo-fact"><span class="k">Venue</span><span class="v">Texas Western Hall</span></div>
+                        <div class="awinfo-fact"><span class="k">Host</span><span class="v">UTEP College of Business</span></div>
+                        <div class="awinfo-fact"><span class="k">Date</span><span class="v">2025</span></div>
+                        <div class="awinfo-fact"><span class="k">Format</span><span class="v">Investor Pitch (Shark Tank Style)</span></div>
+                        <div class="awinfo-fact"><span class="k">Languages</span><span class="v">English &amp; Spanish</span></div>
+                    </template>
                 </div>
                 <div class="hex-cell"
                      style="--hex-img: url('./Worthy%20Images/dell-tech.webp'); --dock-color: #6B4A1E"
@@ -4957,6 +5025,18 @@ flex-direction: column;
                     </div>
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                    <template class="hex-story">
+                        <p>The Dell Tech Academy case competition was a <strong>two-day intensive</strong> hosted by Dell Technologies, focused on real supply-chain optimization problems faced by enterprise hardware manufacturing.</p>
+                        <p>Worked with <em>Isaac Torres</em>, <em>Aden Ramirez</em>, and <em>Luis Cruz Garfio</em> to break down the brief, model the constraints, and present a recommendation. Our analysis covered <mark>inventory positioning</mark>, <mark>multi-tier supplier risk</mark>, and <mark>cycle-time tradeoffs</mark> — and the final pitch held up under cross-examination from Dell's panel.</p>
+                        <p>We placed <strong>3rd overall</strong>, which reflected both the strength of the cohort and the hands-on industry exposure the program is designed to give engineering students stepping into supply-chain-adjacent roles.</p>
+                        <p>The competition format combined live working sessions with mentor check-ins from Dell engineers and managers — turning a normal classroom case study into something closer to a real consulting engagement.</p>
+                        <div class="awinfo-fact"><span class="k">Result</span><span class="v">3rd Place</span></div>
+                        <div class="awinfo-fact"><span class="k">Host</span><span class="v">Dell Technologies</span></div>
+                        <div class="awinfo-fact"><span class="k">Format</span><span class="v">Two-Day Case Competition</span></div>
+                        <div class="awinfo-fact"><span class="k">Date</span><span class="v">2025</span></div>
+                        <div class="awinfo-fact"><span class="k">Domain</span><span class="v">Supply Chain Optimization</span></div>
+                        <div class="awinfo-fact"><span class="k">Team</span><span class="v">Isaac Torres · Aden Ramirez · Luis Cruz Garfio · Carlos Hernandez</span></div>
+                    </template>
                 </div>
                 <div class="hex-cell"
                      style="--hex-img: url('./Worthy%20Images/p21-pitch-portrait.webp'); --dock-color: #0E4A52"
@@ -4976,6 +5056,22 @@ flex-direction: column;
                     </div>
                     <div class="hex-top"></div>
                     <span class="hex-click-cue"><span class="dot"></span>Click</span>
+                    <template class="hex-story">
+                        <p>The <strong>4th Annual P21 VMS Pitch Challenge</strong> is Pioneers 21's flagship showcase for the region's founders — <mark>20+ startups</mark> pitching live to a panel of investors and industry judges, with <strong>$20,000+ in non-dilutive pre-seed funding</strong> on the line.</p>
+                        <p>Getting to the stage was a program, not a signup. Over <strong>five Pitch Prep Sessions</strong>, participating ventures were coached on <mark>intellectual property</mark>, <mark>market analysis</mark>, <mark>pitch development</mark>, and <mark>investor readiness</mark> — and in the practice rounds, more than <strong>20 mentors</strong> from industry, entrepreneurship, and technology leadership tore into every deck live, sharpening both the delivery and the business strategy behind it.</p>
+                        <p>Pitched <em>The Sense Cube</em> — the wireless handheld device that translates real-time smartphone messages into tactile Braille through six high-precision solenoid pins, keeping accessibility off-screen and in the hand.</p>
+                        <p>Closed the day with <strong>2nd place in the Student Track</strong> and a $1,000 award — and a room full of investors, mentors, and fellow founders who now know what The Sense Cube is.</p>
+                        <p><a class="awinfo-link" href="https://pioneers21.org/vms-pitch-challenge" target="_blank" rel="noopener">Learn more about the P21 VMS Pitch Challenge at pioneers21.org →</a></p>
+                        <div class="awinfo-fact"><span class="k">Result</span><span class="v">2nd Place · Student Track · $1,000</span></div>
+                        <div class="awinfo-fact"><span class="k">Event</span><span class="v">4th Annual P21 VMS Pitch Challenge</span></div>
+                        <div class="awinfo-fact"><span class="k">Host</span><span class="v">Pioneers 21 — Venture Mentoring Service</span></div>
+                        <div class="awinfo-fact"><span class="k">Venue</span><span class="v">Tomás Rivera Conference Center · UTEP</span></div>
+                        <div class="awinfo-fact"><span class="k">Date</span><span class="v">May 30, 2026</span></div>
+                        <div class="awinfo-fact"><span class="k">Project</span><span class="v">The Sense Cube</span></div>
+                        <div class="awinfo-fact"><span class="k">Prep</span><span class="v">5 pitch-prep sessions · 20+ mentors</span></div>
+                        <div class="awinfo-fact"><span class="k">Field</span><span class="v">Embedded Systems · Accessibility</span></div>
+                        <div class="awinfo-fact"><span class="k">Event Site</span><span class="v"><a class="awinfo-link" href="https://pioneers21.org/vms-pitch-challenge" target="_blank" rel="noopener">pioneers21.org/vms-pitch-challenge</a></span></div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -5144,7 +5240,7 @@ flex-direction: column;
          ║  GREETING MODAL  ──  opens when the logo is clicked.                 ║
          ║  Cycles "Hello!" in 10 languages + scramble-decrypt JSON terminal.   ║
          ╚══════════════════════════════════════════════════════════════════════╝ -->
-    <div class="gm" id="gm">
+    <div class="gm" id="gm" data-greetings="Hello!|¡Hola!|Bonjour!|Ciao!|Hallo!|Olá!|こんにちは!|你好!|안녕!|Привет!">
         <div class="gm-bg"></div>
         <div class="gm-content">
             <div class="gm-hi-wrap">
@@ -5262,7 +5358,14 @@ flex-direction: column;
         function cLB() { document.getElementById("lb").classList.remove("open"); document.body.style.overflow = ""; }
 
         // ─── §7 · Greeting modal (oG / cG) + scramble decrypt effect ────────
-        var GREETINGS = ["Hello!", "¡Hola!", "Bonjour!", "Ciao!", "Hallo!", "Olá!", "こんにちは!", "你好!", "안녕!", "Привет!"];
+        // The words live in data-greetings on #gm ("|"-separated) so the admin
+        // panel can edit them; the list below is only a fallback.
+        var GREETINGS = (function () {
+            var gm = document.getElementById("gm");
+            var list = (gm && gm.dataset.greetings || "").split("|")
+                .map(function (s) { return s.trim(); }).filter(Boolean);
+            return list.length ? list : ["Hello!", "¡Hola!", "Bonjour!", "Ciao!", "Hallo!", "Olá!", "こんにちは!", "你好!", "안녕!", "Привет!"];
+        })();
         var greetIdx = 0, greetTimer = null;
         function gNext() {
             var el = document.getElementById("gmHi");
@@ -5522,7 +5625,8 @@ flex-direction: column;
             setTimeout(updateArrows, 500);
         })();
         // ─── §11 · Project card click → in-page modal ────────────────────────
-        // Sense Cube card opens its own video modal; the rest share a generic one.
+        // Video cards (incl. Sense Cube + Telemetry) open a video modal, CAD cards
+        // the 3D viewer, and the rest share a generic text modal.
         (function () {
             var overlay = document.createElement('div');
             overlay.className = 'pinfo-overlay';
@@ -5566,93 +5670,6 @@ flex-direction: column;
 
             function closeModal() { overlay.classList.remove('open'); }
 
-            // ── Sense Cube special modal — video + side description ──
-            var scOverlay = document.createElement('div');
-            scOverlay.className = 'scinfo-overlay';
-            scOverlay.innerHTML =
-                '<div class="scinfo-box">' +
-                  '<button class="scinfo-close" aria-label="Close"><i class="fas fa-times"></i></button>' +
-                  '<div class="scinfo-video">' +
-                    '<video id="scVideo" preload="none" playsinline muted loop controls>' +
-                      '<source src="./Worthy%20Images/sense%20cube%20video.mp4" type="video/mp4">' +
-                    '</video>' +
-                  '</div>' +
-                  '<div class="scinfo-desc">' +
-                    '<span class="scinfo-status"><i class="fas fa-trophy"></i> 1st · $4K Won</span>' +
-                    '<div class="scinfo-cat">Embedded Systems · Accessibility</div>' +
-                    '<h3 class="scinfo-title">The Sense Cube</h3>' +
-                    '<p class="scinfo-body">Wireless handheld device translating real-time smartphone messages into tactile Braille via six high-precision solenoid pins. Bluetooth-paired to the user\'s phone, the Cube fires its solenoids in Braille patterns the user reads by touch — keeping accessibility off-screen and in the hand. Won 1st place at Miner Pitch ($3K) and 1st at Pioneers 21 ($1K), plus 2nd at Miner Tank.</p>' +
-                    '<div class="scinfo-tags">' +
-                      '<span class="scinfo-tag">Arduino</span>' +
-                      '<span class="scinfo-tag">Bluetooth</span>' +
-                      '<span class="scinfo-tag">Solenoids</span>' +
-                      '<span class="scinfo-tag">3D Printing</span>' +
-                      '<span class="scinfo-tag">Accessibility</span>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>';
-            document.body.appendChild(scOverlay);
-            var scVideoEl = scOverlay.querySelector('#scVideo');
-
-            function openSenseCube() {
-                scOverlay.classList.add('open');
-                // Kick playback right away — muted + loop satisfies autoplay rules.
-                try {
-                    scVideoEl.currentTime = 0;
-                    var p = scVideoEl.play();
-                    if (p && typeof p.catch === 'function') p.catch(function () {});
-                } catch (e) {}
-            }
-            function closeSenseCube() {
-                scOverlay.classList.remove('open');
-                try { scVideoEl.pause(); } catch (e) {}
-            }
-            scOverlay.querySelector('.scinfo-close').addEventListener('click', closeSenseCube);
-            scOverlay.addEventListener('click', function (e) { if (e.target === scOverlay) closeSenseCube(); });
-
-            // ── Telemetry Ground Station modal — video + side description ──
-            var tgOverlay = document.createElement('div');
-            tgOverlay.className = 'scinfo-overlay';
-            tgOverlay.innerHTML =
-                '<div class="scinfo-box">' +
-                  '<button class="scinfo-close" aria-label="Close"><i class="fas fa-times"></i></button>' +
-                  '<div class="scinfo-video">' +
-                    '<video id="tgVideo" preload="none" playsinline muted loop controls>' +
-                      '<source src="./Worthy%20Images/Rocket%20Video.mp4" type="video/mp4">' +
-                    '</video>' +
-                  '</div>' +
-                  '<div class="scinfo-desc">' +
-                    '<span class="scinfo-status"><i class="fas fa-rocket"></i> Active · Flight-Tested</span>' +
-                    '<div class="scinfo-cat">Aerospace · Embedded DAQ</div>' +
-                    '<h3 class="scinfo-title">Telemetry Ground Station</h3>' +
-                    '<p class="scinfo-body">A real-time flight-data system built for the <strong>Sun City Rocket Team</strong>. The ground station decodes live telemetry from the rocket\'s onboard DAQ — pressure transducers, K-type thermocouples, accelerometers — and renders the data as it streams down so engineers can react in flight, not after recovery. The project carried the team through <strong>2nd place at IREC 2025</strong> and <strong>1st place at Lone Star Cup 2025</strong>, where reliable telemetry was the difference between a guess and a known apogee.</p>' +
-                    '<div class="scinfo-tags">' +
-                      '<span class="scinfo-tag">Arduino Mega</span>' +
-                      '<span class="scinfo-tag">Telemetry</span>' +
-                      '<span class="scinfo-tag">4-20 mA Loop</span>' +
-                      '<span class="scinfo-tag">Thermocouples</span>' +
-                      '<span class="scinfo-tag">DAQ</span>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>';
-            document.body.appendChild(tgOverlay);
-            var tgVideoEl = tgOverlay.querySelector('#tgVideo');
-
-            function openTelemetry() {
-                tgOverlay.classList.add('open');
-                try {
-                    tgVideoEl.currentTime = 0;
-                    var p = tgVideoEl.play();
-                    if (p && typeof p.catch === 'function') p.catch(function () {});
-                } catch (e) {}
-            }
-            function closeTelemetry() {
-                tgOverlay.classList.remove('open');
-                try { tgVideoEl.pause(); } catch (e) {}
-            }
-            tgOverlay.querySelector('.scinfo-close').addEventListener('click', closeTelemetry);
-            tgOverlay.addEventListener('click', function (e) { if (e.target === tgOverlay) closeTelemetry(); });
-
             // ── Generic helper: build a video + side-description modal ───────────
             function buildVideoModal(opts) {
                 var ov = document.createElement('div');
@@ -5685,12 +5702,19 @@ flex-direction: column;
             }
 
             // ── Generic video card → reuse buildVideoModal, sourced from card DOM ─
+            // An optional <template class="pcard__popup"> inside the card holds
+            // popup-only text (status / category / description / tags); any
+            // field it leaves out falls back to the card's own text.
             function openVideoCard(card) {
                 if (!card._vmodal) {
-                    var txt = function (sel) { var e = card.querySelector(sel); return e ? e.textContent.trim() : ''; };
-                    var descEl = card.querySelector('.pcard__desc');
+                    var tpl = card.querySelector('template.pcard__popup');
+                    var pop = tpl ? tpl.content : null;
+                    var pick = function (sel) { return (pop && pop.querySelector(sel)) || card.querySelector(sel); };
+                    var txt = function (sel) { var e = pick(sel); return e ? e.textContent.trim() : ''; };
+                    var descEl = pick('.pcard__desc');
                     var tags = [];
-                    card.querySelectorAll('.pcard__tag').forEach(function (t) { tags.push(t.textContent.trim()); });
+                    var tagSrc = (pop && pop.querySelector('.pcard__tag')) ? pop : card;
+                    tagSrc.querySelectorAll('.pcard__tag').forEach(function (t) { tags.push(t.textContent.trim()); });
                     card._vmodal = buildVideoModal({
                         video:      card.dataset.video,
                         statusIcon: card.dataset.statusIcon || 'fa-play',
@@ -5828,9 +5852,7 @@ flex-direction: column;
 
             document.querySelectorAll('.pcard').forEach(function (card) {
                 card.addEventListener('click', function () {
-                    if      (card.dataset.sc === '1') openSenseCube();
-                    else if (card.dataset.tg === '1') openTelemetry();
-                    else if (card.dataset.video)      openVideoCard(card);
+                    if      (card.dataset.video)      openVideoCard(card);
                     else if (card.dataset.cad)        openCadModal(card);
                     else                              openModal(card);
                 });
@@ -5841,8 +5863,6 @@ flex-direction: column;
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     closeModal();
-                    closeSenseCube();
-                    closeTelemetry();
                     closeCadModal();
                     document.querySelectorAll('.scinfo-overlay.open').forEach(function (ov) {
                         ov.classList.remove('open');
@@ -5853,117 +5873,12 @@ flex-direction: column;
         })();
 
         // ─── §12 · Award hexagon click → full-screen in-page popup ──────────
-        // Per-event rich content (paragraphs + facts grid) lives in DETAILS{}.
+        // Per-event rich content (paragraphs + facts grid) lives in each
+        // cell's <template class="hex-story"> so the admin panel can edit it.
         (function () {
             var cells = document.querySelectorAll('.hex-cell');
             if (!cells.length) return;
 
-            // Per-event detailed content. Paragraphs split on \n\n.
-            var DETAILS = {
-                "BorderHack '26 — Wayve": {
-                    paras: [
-                        "<strong>1st place at BorderHack '26.</strong> Built <em>Wayve</em> in a single day — a smart cane for visually impaired people that doesn't need an app store, doesn't need a sighted friend, and doesn't need you to learn anything new to use it.",
-                        "<strong>Arduino R4 WiFi</strong> running the hardware. A <strong>mobile web app written from scratch</strong> running the software. The user speaks a destination, <mark>Gemini</mark> handles the voice, <mark>Google Maps</mark> plots the route, and the cane's <mark>servo motors</mark> physically signal which way to turn while sensors catch what's in front of you.",
-                        "Hardware and software in parallel, built to talk to each other in real time, and working by pitch day. Thanks to <em>GDSC UTEP</em> and <em>DropDev</em> for organizing these sorts of events — and to teammates <strong>Luis Juarez</strong>, <strong>Mauricio Prieto</strong>, and <strong>Imanol Galván</strong>. Three people I'd build with again tomorrow.",
-                        "First win. Not the last."
-                    ],
-                    facts: [
-                        ['Result',    '1st Place — BorderHack ’26'],
-                        ['Event',     'BorderHack ’26'],
-                        ['Hosts',     'GDSC UTEP × DropDev'],
-                        ['Venue',     'Texas Western Hall · UTEP'],
-                        ['Date',      'April 2026'],
-                        ['Build Time','Under 24 hours'],
-                        ['Hardware',  'Arduino R4 WiFi · Servos · Sensors'],
-                        ['Software',  'Mobile web app · Gemini voice · Google Maps API'],
-                        ['Team',      'Luis Juarez · Mauricio Prieto · Imanol Galván · Carlos Hernandez']
-                    ]
-                },
-                'Miners Pitch Competition': {
-                    paras: [
-                        "<strong>Selected from over 60 applications</strong> to pitch <em>The Sense Cube</em> on the main stage at the Mike Loya Center, the heart of UTEP's entrepreneurship programs.",
-                        "The Sense Cube is a wireless handheld device that translates real-time smartphone messages into <mark>tactile Braille</mark> via six high-precision solenoid pins. The Cube pairs to the user's phone over Bluetooth, intercepts incoming messages, and fires the solenoids in Braille patterns the user reads by touch — keeping accessibility off-screen and in the hand.",
-                        "The competition was three rounds: a written application, a semifinal pitch with a working prototype, and a final on-stage pitch in front of investors and faculty. After advancing through every elimination round, the project took <strong>1st place</strong> against a strong UTEP cohort.",
-                        "The $3,000 prize is funding the next push: <mark>higher-precision solenoids</mark>, a refined Bluetooth stack, and a smaller, denser PCB respin that brings the whole device closer to a shippable form factor."
-                    ],
-                    facts: [
-                        ['Result',  '1st Place · $3,000 Prize'],
-                        ['Venue',   'Mike Loya Academic Services Building'],
-                        ['Host',    'UTEP — Miner Excellence Programs'],
-                        ['Date',    'November 2025'],
-                        ['Project', 'The Sense Cube'],
-                        ['Field',   'Embedded Systems · Accessibility']
-                    ]
-                },
-                'Pioneers 21 — Tacos & Tech-ila': {
-                    paras: [
-                        "Pioneers 21's holiday mixer brought together the strongest emerging ventures across the <strong>El Paso – Las Cruces corridor</strong>, hosted by <em>Microsoft</em> and <em>Nusenda Credit Union</em>.",
-                        "Pitching <em>The Sense Cube</em> alongside ventures including <mark>Wealthy</mark>, <mark>NG Leg Bot</mark>, <mark>Signology LLC</mark>, and <mark>BrightSteps</mark>, the project closed the night in <strong>1st place</strong> — a $1,000 award and an invitation to continue conversations with the host program.",
-                        "The pitch leaned into what makes The Sense Cube unique in the accessibility hardware space: a <strong>self-contained Braille translation device</strong> that doesn't depend on a phone in the user's hand. It's designed to be carried like a thick deck of cards — messages arrive as physical pin patterns the user can read by touch, anywhere, anytime.",
-                        "The room was a mix of investors, founders, and engineers, and the Q&amp;A pushed on go-to-market and unit economics — both areas the team has been actively iterating on with the prize funding."
-                    ],
-                    facts: [
-                        ['Result',  '1st Place · $2,000 Prize'],
-                        ['Event',   'Tacos & Tech-ila Holiday Mixer'],
-                        ['Hosts',   'Microsoft & Nusenda Credit Union'],
-                        ['Date',    'December 2025'],
-                        ['Region',  'El Paso – Las Cruces'],
-                        ['Cohort',  'Pioneers 21']
-                    ]
-                },
-                'Miner Tank Pitch Competition': {
-                    paras: [
-                        "Miner Tank is UTEP's flagship <strong>Shark-Tank-style competition</strong>. Pitched <em>The Sense Cube</em> in front of a panel of investors, faculty, and industry mentors at Texas Western Hall — and made it the <strong>first bilingual pitch in the event's history</strong>.",
-                        "When a judge asked a question whose answer mattered most to the people the device is for — Spanish-speaking communities along the U.S./Mexico border — the rest of the pitch was answered <mark>entirely in Spanish</mark>. It let the social impact of accessible Braille hardware land without flattening through translation, and framed the product the way it should be framed: built for the people who need it.",
-                        "The judges awarded the project <strong>2nd place overall</strong> and called out the bilingual delivery as a defining moment of the night.",
-                        "Beyond the result, Miner Tank was a forcing function: condensing a year of hardware iteration into eight minutes of investor-grade narrative, on a stage that takes itself seriously."
-                    ],
-                    facts: [
-                        ['Result',    '2nd Place · Bilingual Distinction'],
-                        ['Venue',     'Texas Western Hall'],
-                        ['Host',      'UTEP College of Business'],
-                        ['Date',      '2025'],
-                        ['Format',    'Investor Pitch (Shark Tank Style)'],
-                        ['Languages', 'English & Spanish']
-                    ]
-                },
-                'Dell Tech Academy': {
-                    paras: [
-                        "The Dell Tech Academy case competition was a <strong>two-day intensive</strong> hosted by Dell Technologies, focused on real supply-chain optimization problems faced by enterprise hardware manufacturing.",
-                        "Worked with <em>Isaac Torres</em>, <em>Aden Ramirez</em>, and <em>Luis Cruz Garfio</em> to break down the brief, model the constraints, and present a recommendation. Our analysis covered <mark>inventory positioning</mark>, <mark>multi-tier supplier risk</mark>, and <mark>cycle-time tradeoffs</mark> — and the final pitch held up under cross-examination from Dell's panel.",
-                        "We placed <strong>3rd overall</strong>, which reflected both the strength of the cohort and the hands-on industry exposure the program is designed to give engineering students stepping into supply-chain-adjacent roles.",
-                        "The competition format combined live working sessions with mentor check-ins from Dell engineers and managers — turning a normal classroom case study into something closer to a real consulting engagement."
-                    ],
-                    facts: [
-                        ['Result', '3rd Place'],
-                        ['Host',   'Dell Technologies'],
-                        ['Format', 'Two-Day Case Competition'],
-                        ['Date',   '2025'],
-                        ['Domain', 'Supply Chain Optimization'],
-                        ['Team',   'Isaac Torres · Aden Ramirez · Luis Cruz Garfio · Carlos Hernandez']
-                    ]
-                },
-                'P21 VMS Pitch Challenge': {
-                    paras: [
-                        "The <strong>4th Annual P21 VMS Pitch Challenge</strong> is Pioneers 21's flagship showcase for the region's founders — <mark>20+ startups</mark> pitching live to a panel of investors and industry judges, with <strong>$20,000+ in non-dilutive pre-seed funding</strong> on the line.",
-                        "Getting to the stage was a program, not a signup. Over <strong>five Pitch Prep Sessions</strong>, participating ventures were coached on <mark>intellectual property</mark>, <mark>market analysis</mark>, <mark>pitch development</mark>, and <mark>investor readiness</mark> — and in the practice rounds, more than <strong>20 mentors</strong> from industry, entrepreneurship, and technology leadership tore into every deck live, sharpening both the delivery and the business strategy behind it.",
-                        "Pitched <em>The Sense Cube</em> — the wireless handheld device that translates real-time smartphone messages into tactile Braille through six high-precision solenoid pins, keeping accessibility off-screen and in the hand.",
-                        "Closed the day with <strong>2nd place in the Student Track</strong> and a $1,000 award — and a room full of investors, mentors, and fellow founders who now know what The Sense Cube is.",
-                        "<a class=\"awinfo-link\" href=\"https://pioneers21.org/vms-pitch-challenge\" target=\"_blank\" rel=\"noopener\">Learn more about the P21 VMS Pitch Challenge at pioneers21.org →</a>"
-                    ],
-                    facts: [
-                        ['Result',  '2nd Place · Student Track · $1,000'],
-                        ['Event',   '4th Annual P21 VMS Pitch Challenge'],
-                        ['Host',    'Pioneers 21 — Venture Mentoring Service'],
-                        ['Venue',   'Tomás Rivera Conference Center · UTEP'],
-                        ['Date',    'May 30, 2026'],
-                        ['Project', 'The Sense Cube'],
-                        ['Prep',    '5 pitch-prep sessions · 20+ mentors'],
-                        ['Field',   'Embedded Systems · Accessibility'],
-                        ['Event Site', '<a class="awinfo-link" href="https://pioneers21.org/vms-pitch-challenge" target="_blank" rel="noopener">pioneers21.org/vms-pitch-challenge</a>']
-                    ]
-                }
-            };
 
             var overlay = document.createElement('div');
             overlay.className = 'awinfo-overlay';
@@ -6015,22 +5930,17 @@ flex-direction: column;
                 // Optional per-cell crop anchor (e.g. data-img-pos="center top").
                 overlay.style.setProperty('--hero-pos', cell.dataset.heroPos || cell.dataset.imgPos || 'center');
 
-                // Rich paragraphs + facts grid (fall back to short desc if no detail entry)
+                // Rich paragraphs + facts grid come from the cell's own
+                // <template class="hex-story">; cells without one fall back
+                // to the short data-desc summary.
                 parasEl.innerHTML = '';
                 factsEl.innerHTML = '';
-                var entry = DETAILS[title];
-                if (entry) {
-                    entry.paras.forEach(function (p) {
-                        var el = document.createElement('p');
-                        el.innerHTML = p;
-                        parasEl.appendChild(el);
-                    });
-                    entry.facts.forEach(function (kv) {
-                        var f = document.createElement('div');
-                        f.className = 'awinfo-fact';
-                        f.innerHTML = '<span class="k">' + kv[0] + '</span><span class="v">' + kv[1] + '</span>';
-                        factsEl.appendChild(f);
-                    });
+                var story = cell.querySelector('template.hex-story');
+                var paras = story ? story.content.querySelectorAll('p') : [];
+                var facts = story ? story.content.querySelectorAll('.awinfo-fact') : [];
+                if (paras.length || facts.length) {
+                    paras.forEach(function (p) { parasEl.appendChild(document.importNode(p, true)); });
+                    facts.forEach(function (f) { factsEl.appendChild(document.importNode(f, true)); });
                 } else {
                     var p = document.createElement('p');
                     p.textContent = desc;
