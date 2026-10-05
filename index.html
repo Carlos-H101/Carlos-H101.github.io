@@ -2965,11 +2965,32 @@ flex-direction: column;
         .cadinfo-viewer model-viewer:active { cursor: grabbing }
         .cadinfo-viewer model-viewer:focus  { outline: none }
 
-        /* Small title above the CAD rectangles — sits just under the skills marquee.
-           Smaller than the FEATURED PROJECTS hero header, but enough to grab attention. */
+        /* Small title above the CAD rectangles — hugs the skills marquee (no
+           gap when the CAD gallery directly follows Projects) and nudges
+           visitors to keep scrolling with a bouncing chevron under it. */
+        #projects:has(+ #cad) { padding-bottom: 0 !important }
+        #projects:has(+ #cad) .marquee-section { margin-bottom: .15rem }
         .cad-mini-title {
             text-align: center;
-            padding: .35rem clamp(1.5rem, 4vw, 4rem) .6rem
+            padding: 0 clamp(1.5rem, 4vw, 4rem) .45rem
+        }
+        .cad-mini-title::after {
+            content: '\f078';
+            display: block;
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: .85rem;
+            line-height: 1;
+            color: var(--acc2);
+            margin-top: .35rem;
+            animation: cadNudge 1.6s ease-in-out infinite
+        }
+        @keyframes cadNudge {
+            0%, 100% { transform: translateY(0); opacity: .5 }
+            50%      { transform: translateY(5px); opacity: 1 }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .cad-mini-title::after { animation: none }
         }
         .cad-mini-title__eyebrow {
             display: inline-block;
@@ -2983,8 +3004,8 @@ flex-direction: column;
         }
         .cad-mini-title__h {
             font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
-            font-size: clamp(1rem, 1.7vw, 1.25rem);
-            font-weight: 500;
+            font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+            font-weight: 600;
             color: var(--txt);
             margin: 0;
             letter-spacing: .005em;
@@ -4392,9 +4413,9 @@ flex-direction: column;
             
             
             
-        <div class="pcard pcard--cad tilt" data-cad="brailleeval" data-glb="./CAD%20Projects/Braille%20Evaluation%20Board.glb" data-poster="./CAD%20Projects/Braille%20Evaluation%20Board.webp">
+        <div class="pcard pcard--cad tilt" data-cad="brailleeval" data-glb="./CAD%20Projects/Braille%20Evaluation%20Board.glb" data-poster="./CAD%20Projects/Braille%20Evaluation%20Board%203D.webp">
                 <div class="pcard__hint"><span class="dot"></span>Click to spin in 3D</div>
-                <img class="pcard__poster" src="./CAD%20Projects/Braille%20Evaluation%20Board.webp" alt="Braille cell evaluation board PCB layout" loading="lazy">
+                <img class="pcard__poster" src="./CAD%20Projects/Braille%20Evaluation%20Board%203D.webp" alt="Braille cell evaluation board, 3D view" loading="lazy">
                 <div class="pcard__scrim"></div>
                 <span class="pcard__status"><i class="fas fa-cube" style="margin-right:.35rem"></i>View in 3D</span>
                 <div class="pcard__content">
@@ -5199,7 +5220,7 @@ flex-direction: column;
                 <p class="resume-kicker"><i class="fas fa-file-pdf"></i>PDF · 1 page</p>
                 <h3 class="resume-title">Carlos Gael Hernandez Castro</h3>
                 <p class="resume-role">B.S. Electrical Engineering · Minor in Finance · UTEP</p>
-                <p class="resume-meta">Updated July 2026</p>
+                <p class="resume-meta">Updated October 2026</p>
                 <div class="resume-actions">
                     <a class="resume-btn resume-btn--primary resume-pdf" href="./resume/Carlos_Gael_Hernandez_Castro_Resume.pdf" download="Carlos_Gael_Hernandez_Castro_Resume.pdf"><i class="fas fa-download"></i>Download Resume</a>
                     <a class="resume-btn resume-pdf" href="./resume/Carlos_Gael_Hernandez_Castro_Resume.pdf" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i>View in Browser</a>
