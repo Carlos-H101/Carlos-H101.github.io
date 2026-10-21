@@ -1957,9 +1957,12 @@
             box-shadow: 0 0 6px rgba(255, 255, 255, .6);
             animation: none
         }
-        .pcard:hover .pcard__hint {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-2px)
+        /* hover-only: on touch screens a tap "sticks" as a hover */
+        @media (hover: hover) {
+            .pcard:hover .pcard__hint {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-2px)
+            }
         }
         @keyframes hintDot {
             0%, 100% { opacity: .55 }
@@ -1977,32 +1980,35 @@
         }
 
         /* Hover behavior on the focused card */
-        .pcard:hover {
-            border-color: var(--acc);
-            transform: translateY(-4px);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, .6), 0 0 0 1px var(--acc3)
-        }
+        /* hover-only: on touch screens a tap "sticks" as a hover */
+        @media (hover: hover) {
+            .pcard:hover {
+                border-color: var(--acc);
+                transform: translateY(-4px);
+                box-shadow: 0 25px 60px rgba(0, 0, 0, .6), 0 0 0 1px var(--acc3)
+            }
 
-        .pcard:hover .pcard__bg,
-        .pcard:hover .pcard__fallback {
-            transform: scale(1.06)
-        }
+            .pcard:hover .pcard__bg,
+            .pcard:hover .pcard__fallback {
+                transform: scale(1.06)
+            }
 
-        .pcard:hover .pcard__scrim {
-            background: transparent
-        }
+            .pcard:hover .pcard__scrim {
+                background: transparent
+            }
 
-        .pcard:hover .pcard__bottom {
-            opacity: 0;
-            transform: translateY(12px)
-        }
+            .pcard:hover .pcard__bottom {
+                opacity: 0;
+                transform: translateY(12px)
+            }
 
-        /* Dim (not blur) the non-hovered cards: opacity composites on the GPU
-           for free, while blur() re-filtered every large card layer and was
-           one of the heaviest effects on low-end machines. */
-        .pgrid:has(.pcard:hover) .pcard:not(:hover) {
-            opacity: .55;
-            transition: opacity .35s ease
+            /* Dim (not blur) the non-hovered cards: opacity composites on the GPU
+               for free, while blur() re-filtered every large card layer and was
+               one of the heaviest effects on low-end machines. */
+            .pgrid:has(.pcard:hover) .pcard:not(:hover) {
+                opacity: .55;
+                transition: opacity .35s ease
+            }
         }
 
         @media (max-width:768px) {
@@ -3213,8 +3219,11 @@ flex-direction: column;
             justify-content: flex-start;
             padding-top: 22%
         }
-        .hex-cell:hover .hex-dock-content {
-            opacity: 1
+        /* hover-only: on touch screens a tap "sticks" as a hover */
+        @media (hover: hover) {
+            .hex-cell:hover .hex-dock-content {
+                opacity: 1
+            }
         }
         .hex-dock-content .title {
             font-family: 'SF Pro Display', -apple-system, 'Inter', sans-serif;
@@ -3280,10 +3289,13 @@ flex-direction: column;
             box-shadow: 0 0 8px var(--dock-color, var(--acc));
             animation: none
         }
-        .hex-cell:hover .hex-click-cue {
-            opacity: 0;
-            transform: translate(-50%, 6px);
-            animation: none
+        /* hover-only: on touch screens a tap "sticks" as a hover */
+        @media (hover: hover) {
+            .hex-cell:hover .hex-click-cue {
+                opacity: 0;
+                transform: translate(-50%, 6px);
+                animation: none
+            }
         }
         @keyframes hexCueFloat {
             0%, 100% { transform: translate(-50%, 0) }
@@ -3312,18 +3324,37 @@ flex-direction: column;
             background-position: center;
             background-color: #0d1416
         }
+        /* The photo is drawn by a real <img> the award script adds to each
+           hex: iPhone browsers (all WebKit) can skip a background image that
+           comes from a CSS variable, which left the hexes empty on phones.
+           The ::after background above stays as the no-JavaScript fallback. */
+        .hex-art {
+            position: absolute;
+            inset: 10px;
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            object-fit: cover;
+            -webkit-clip-path: var(--hex-clip);
+            clip-path: var(--hex-clip);
+            background: #0d1416;
+            pointer-events: none
+        }
+        .hex-top.has-art::after { display: none }
         /* Top-row: lift up. Offset-row: drop down. */
-        .hex-row > .hex-cell:hover .hex-top {
-            transform: translateY(calc(var(--lift) * -1)) scale(1.02);
-            filter: drop-shadow(0 24px 36px rgba(255, 200, 0, .55))
-                    drop-shadow(0 0 24px rgba(255, 220, 60, .35))
+        /* hover-only: on touch screens a tap "sticks" as a hover */
+        @media (hover: hover) {
+            .hex-row > .hex-cell:hover .hex-top {
+                transform: translateY(calc(var(--lift) * -1)) scale(1.02);
+                filter: drop-shadow(0 24px 36px rgba(255, 200, 0, .55))
+                        drop-shadow(0 0 24px rgba(255, 220, 60, .35))
+            }
+            .hex-row.offset > .hex-cell:hover .hex-top {
+                transform: translateY(var(--lift)) scale(1.02);
+                filter: drop-shadow(0 -24px 36px rgba(255, 200, 0, .55))
+                        drop-shadow(0 0 24px rgba(255, 220, 60, .35))
+            }
+            .hex-cell:hover { z-index: 6 }
         }
-        .hex-row.offset > .hex-cell:hover .hex-top {
-            transform: translateY(var(--lift)) scale(1.02);
-            filter: drop-shadow(0 -24px 36px rgba(255, 200, 0, .55))
-                    drop-shadow(0 0 24px rgba(255, 220, 60, .35))
-        }
-        .hex-cell:hover { z-index: 6 }
 
         @media (max-width: 900px) {
             .hex-grid { --hex-w: 220px; --lift: 80px }
@@ -3719,6 +3750,47 @@ flex-direction: column;
             color: rgba(255, 255, 255, .65);
             margin: 0;
             text-align: left
+        }
+        /* ───── §12 · Phones & touch screens ──────────────────────────────
+           Every iPhone browser runs Safari's WebKit engine. Hover-only cues
+           become always-on here, the award hive sizes itself to the screen,
+           and full-height pieces use the visible viewport (100dvh) so they
+           are not hidden behind Safari's toolbars. Kept last so it wins. */
+        @media (hover: none) {
+            /* "Tap to view" pill always visible, like the CAD cards */
+            .pcard__hint { opacity: .92; transform: translateX(-50%) translateY(0) }
+            /* no hover lift on phones, so no room reserved for it */
+            .hex-grid { --lift: 0px }
+            .hex-click-cue { font-size: 0 }
+            .hex-click-cue::after { content: 'Tap'; font-size: .55rem; letter-spacing: .14em }
+        }
+        @media (hover: none) and (max-width: 600px) {
+            /* small hexes: a slimmer, lower pill that covers less of the photo */
+            .hex-click-cue { bottom: 9%; gap: .25rem; padding: .18rem .45rem .18rem .38rem }
+            .hex-click-cue::after { font-size: .48rem; letter-spacing: .12em }
+            .hex-click-cue .dot { width: 4px; height: 4px }
+        }
+        @media (max-width: 900px) {
+            /* 3 hexes + the offset row's half-hex overhang, sized from the
+               screen width (the older 720/600/480px rules fought each other
+               and let 160px hexes run off a 390px phone). The hive may use
+               the section's side padding, centered with a computed margin. */
+            .hex-grid {
+                --hex-w: min(calc((100vw - 20px) / 3.55), 220px);
+                width: calc(3.5 * var(--hex-w) + 2.5 * var(--col-gap)) !important;
+                max-width: none;
+                padding-left: 0;
+                padding-right: 0;
+                margin-left: calc((100% - (3.5 * var(--hex-w) + 2.5 * var(--col-gap))) / 2);
+                margin-right: 0
+            }
+        }
+        @supports (height: 100dvh) {
+            .scinfo-box, .cadinfo-box { max-height: calc(100dvh - 4rem) }
+            .lb { height: 100dvh }
+            @media (max-width: 820px) {
+                .cadinfo-box { max-height: calc(100dvh - 2rem) }
+            }
         }
     </style>
 </head>
@@ -5894,6 +5966,21 @@ flex-direction: column;
         (function () {
             var cells = document.querySelectorAll('.hex-cell');
             if (!cells.length) return;
+
+            // Draw each hex photo with a real <img> (see .hex-art in the CSS):
+            // WebKit can skip images that come from a CSS variable.
+            cells.forEach(function (cell) {
+                var top = cell.querySelector('.hex-top');
+                if (!top || !cell.dataset.img || top.querySelector('.hex-art')) return;
+                var art = document.createElement('img');
+                art.className = 'hex-art';
+                art.alt = '';
+                art.decoding = 'async';
+                art.loading = 'lazy';
+                art.src = cell.dataset.img;
+                top.appendChild(art);
+                top.classList.add('has-art');
+            });
 
 
             var overlay = document.createElement('div');
