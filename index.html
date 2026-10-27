@@ -11,6 +11,12 @@
     <link rel="icon" type="image/png" href="/favicon.png" sizes="any">
     
     <link rel="manifest" href="/manifest.json">
+    <!-- installed app (Add to Home Screen): icon, title, full-screen -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Carlos H.">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#000000">
     <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));}</script>
 
@@ -3792,6 +3798,80 @@ flex-direction: column;
                 .cadinfo-box { max-height: calc(100dvh - 2rem) }
             }
         }
+        /* ───── §13 · Installed app (Add to Home Screen) ─────────────────────
+           Only used when the site runs as the home-screen app (see §14 in
+           the scripts): an offline-save status pill and a full-screen,
+           scrollable resume viewer that works without internet. */
+        .app-pill {
+            position: fixed;
+            left: 50%;
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            transform: translateX(-50%) translateY(16px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .55rem 1rem;
+            border-radius: 999px;
+            background: rgba(10, 16, 20, .9);
+            border: 1px solid var(--acc3);
+            color: #e8f6fa;
+            font: 500 .8rem/1.2 'Outfit', sans-serif;
+            letter-spacing: .02em;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .4s ease, transform .4s ease;
+            white-space: nowrap
+        }
+        .app-pill.show { opacity: 1; transform: translateX(-50%) translateY(0) }
+        .app-pill .bar {
+            width: 90px;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, .14);
+            overflow: hidden
+        }
+        .app-pill .bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .25s ease }
+        .app-pill.ok .bar { display: none }
+        .app-pill.ok .txt::before { content: '\2713'; color: var(--acc); margin-right: .45rem }
+        .app-resume {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: none;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            background: rgba(5, 8, 15, .97);
+            padding: calc(72px + env(safe-area-inset-top, 0px)) 16px 40px
+        }
+        .app-resume.open { display: block }
+        .app-resume img {
+            display: block;
+            width: min(100%, 980px);
+            height: auto;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .6)
+        }
+        .app-resume-close {
+            position: fixed;
+            top: calc(14px + env(safe-area-inset-top, 0px));
+            right: 16px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid var(--acc3);
+            background: rgba(10, 16, 20, .92);
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 1
+        }
     </style>
 </head>
 
@@ -5281,7 +5361,7 @@ flex-direction: column;
         </div>
         <div class="resume-card rv">
             <a class="resume-preview resume-pdf" href="./resume/Carlos_Gael_Hernandez_Castro_Resume.pdf?v=20261026" target="_blank" rel="noopener" aria-label="Open my resume (PDF) in a new tab">
-                <img src="./resume/resume-preview.webp?v=20261026" alt="Preview of Carlos Gael Hernandez Castro's one-page resume" width="640" height="828" loading="lazy">
+                <img src="./resume/resume-preview.webp?v=20261027" alt="Preview of Carlos Gael Hernandez Castro's one-page resume" width="640" height="828" loading="lazy">
             </a>
             <div class="resume-info">
                 <p class="resume-kicker"><i class="fas fa-file-pdf"></i>PDF · 1 page</p>
@@ -6096,6 +6176,107 @@ flex-direction: column;
             }, { passive: true });
             window.addEventListener('resize', check);
             check();
+        })();
+    </script>
+    <script>
+        // ─── §14 · Installed app (Add to Home Screen / Install app) ──────────
+        // Opened from the home-screen icon, the site asks the service worker
+        // to save everything for offline use (a status pill shows while it
+        // downloads), and the resume opens inside the app instead of a
+        // browser tab, which would need internet. ?app=1 forces this mode
+        // in a normal browser for testing.
+        (function () {
+            var mm = function (q) { return !!(window.matchMedia && window.matchMedia(q).matches); };
+            var isApp = /[?&]app=1(&|$)/.test(location.search) || mm('(display-mode: standalone)') ||
+                        mm('(display-mode: fullscreen)') || navigator.standalone === true;
+            if (!isApp) return;
+            document.documentElement.classList.add('app-mode');
+
+            // ── resume viewer ──
+            var viewer = null;
+            function closeResume() {
+                if (viewer && viewer.classList.contains('open')) {
+                    viewer.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+            }
+            function openResume() {
+                var page = document.querySelector('.resume-preview img');
+                if (!page) return false;
+                if (!viewer) {
+                    viewer = document.createElement('div');
+                    viewer.className = 'app-resume';
+                    viewer.innerHTML = '<button class="app-resume-close" aria-label="Close resume"><i class="fas fa-times"></i></button>' +
+                                       '<img alt="Resume of Carlos Gael Hernandez Castro">';
+                    viewer.querySelector('button').addEventListener('click', closeResume);
+                    viewer.addEventListener('click', function (e) { if (e.target === viewer) closeResume(); });
+                    document.body.appendChild(viewer);
+                }
+                viewer.querySelector('img').src = page.getAttribute('src');
+                viewer.classList.add('open');
+                viewer.scrollTop = 0;
+                document.body.style.overflow = 'hidden';
+                return true;
+            }
+            document.addEventListener('click', function (e) {
+                var a = e.target.closest && e.target.closest('a.resume-pdf');
+                if (!a || a.hasAttribute('download')) return;
+                if (openResume()) e.preventDefault();
+            });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeResume(); });
+
+            // ── offline pack ──
+            if (!('serviceWorker' in navigator)) return;
+            var pill = document.createElement('div');
+            pill.className = 'app-pill';
+            pill.setAttribute('role', 'status');
+            pill.innerHTML = '<span class="txt"></span><span class="bar"><i></i></span>';
+            document.body.appendChild(pill);
+            var txt = pill.querySelector('.txt'), bar = pill.querySelector('.bar i');
+            var hideTimer = null, shown = false;
+            // a quick re-check on launch stays silent; only real downloads show
+            var showTimer = setTimeout(function () { shown = true; pill.classList.add('show'); }, 1200);
+            function say(msg, pct, done) {
+                txt.textContent = msg;
+                if (pct != null) bar.style.width = pct + '%';
+                pill.classList.toggle('ok', !!done);
+                if (done) {
+                    clearTimeout(showTimer);
+                    if (!shown && localStorage.getItem('offlineReady') === '1' && msg === 'Ready to use offline') return;
+                    pill.classList.add('show');
+                    clearTimeout(hideTimer);
+                    hideTimer = setTimeout(function () { pill.classList.remove('show'); }, 3500);
+                }
+            }
+            if (navigator.onLine === false) {
+                say('Offline: showing your saved portfolio', null, true);
+                return;
+            }
+            navigator.serviceWorker.addEventListener('message', function (ev) {
+                var d = ev.data || {};
+                if (d.type !== 'offline-progress') return;
+                if (d.finished) {
+                    if (d.error && d.saved) {
+                        say('Offline: showing your saved portfolio', null, true);
+                    } else if (d.error) {
+                        say('Could not save for offline use. Reopen the app on Wi-Fi.', null, true);
+                    } else if (d.failed) {
+                        say('Saved for offline use (' + d.failed + ' file' + (d.failed > 1 ? 's' : '') + ' still need internet)', 100, true);
+                    } else {
+                        try { var first = localStorage.getItem('offlineReady') !== '1'; localStorage.setItem('offlineReady', '1'); } catch (e) {}
+                        if (first) shown = true;
+                        say('Ready to use offline', 100, true);
+                    }
+                } else if (d.total) {
+                    var pct = Math.round(100 * d.done / d.total);
+                    say('Saving for offline use\u2026 ' + pct + '%', pct, false);
+                }
+            });
+            if (navigator.serviceWorker.startMessages) navigator.serviceWorker.startMessages();
+            navigator.serviceWorker.ready.then(function (reg) {
+                var sw = navigator.serviceWorker.controller || reg.active;
+                if (sw) sw.postMessage({ type: 'sync-offline' });
+            });
         })();
     </script>
 <!--ADMIN-ARCHIVE:-->
